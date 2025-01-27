@@ -185,8 +185,8 @@ function goFight() {
 }
 
 function atacar() {
-  text.innerText = "Os " + monsters[fighting].name + " atacantes.";
-  text.innerText += " Você atacou com " + weapons[armaAtual].name + ".";
+  text.innerText = "O monstro " + monsters[fighting].name + " atacou.";
+  text.innerText += " Você atacou com sua " + weapons[armaAtual].name + ".";
   health -= getMonsteratacarValue(monsters[fighting].level);
   if (isMonsterHit()) {
     monsterHealth -= weapons[armaAtual].power + Math.floor(Math.random() * xp) + 1;    
@@ -221,7 +221,7 @@ function isMonsterHit() {
 }
 
 function esquivar() {
-  text.innerText = "Você esquivou do ataque com " + monsters[fighting].name;
+  text.innerText = "Você esquivou do ataque do " + monsters[fighting].name;
 }
 
 function defeatMonster() {
