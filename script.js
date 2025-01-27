@@ -205,7 +205,7 @@ function atacar() {
     }
   }
   if (Math.random() <= .1 && inventory.length !== 1) {
-    text.innerText += " Sua " + inventory.pop() + " quebrou.";
+    text.innerText += " Sua arma " + inventory.pop() + " quebrou.";
     armaAtual--;
   }
 }
