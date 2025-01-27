@@ -185,7 +185,7 @@ function goFight() {
 }
 
 function atacar() {
-  text.innerText = "Os " + monsters[fighting].name + " atacantes.";
+  text.innerText = "O monstro " + monsters[fighting].name + " atacou.";
   text.innerText += " Você atacou com " + weapons[armaAtual].name + ".";
   health -= getMonsteratacarValue(monsters[fighting].level);
   if (isMonsterHit()) {
@@ -205,7 +205,7 @@ function atacar() {
     }
   }
   if (Math.random() <= .1 && inventory.length !== 1) {
-    text.innerText += " Seu " + inventory.pop() + " intervalo.";
+    text.innerText += " Sua " + inventory.pop() + " quebrou.";
     armaAtual--;
   }
 }
@@ -221,7 +221,7 @@ function isMonsterHit() {
 }
 
 function esquivar() {
-  text.innerText = "Você esquivou do ataque com " + monsters[fighting].name;
+  text.innerText = "Você esquivou do ataque do " + monsters[fighting].name;
 }
 
 function defeatMonster() {
