@@ -1,45 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
 body {
-    background-color: #0a0a23;
-  }
-  
-  #text {
-    background-color: #0a0a23;
+    background-color: #1a1a2e;
     color: #ffffff;
-    padding: 10px;
-  }
-  
-  #game {
-    max-width: 500px;
-    max-height: 400px;
-    background-color: #ffffff;
+    font-family: 'MedievalSharp', cursive;
+    text-align: center;
+    padding: 20px;
+}
+
+#game {
+    max-width: 600px;
+    background-color: #16213e;
     color: #ffffff;
-    margin: 30px auto 0px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+}
+
+#text {
+    background-color: #0f3460;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#controls, #stats {
+    border: 2px solid #e94560;
     padding: 10px;
-  }
-  
-  #controls,
-  #stats {
-    border: 1px solid #0a0a23;
-    padding: 5px;
-    color: #0a0a23;
-  }
-  
-  #monsterStats {
+    margin: 10px 0;
+    border-radius: 10px;
+    background-color: #0f3460;
+}
+
+#monsterStats {
     display: none;
-    border: 1px solid #0a0a23;
-    padding: 5px;
-    color: #ffffff;
-    background-color: #c70d0d;
-  }
-  
-  .stat {
-    padding-right: 10px;
-  }
-  
-  button {
+    border: 2px solid #ff3e3e;
+    padding: 10px;
+    background-color: #c70039;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.stat {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+button {
     cursor: pointer;
-    color: #0a0a23;
-    background-color: #a82e8e;
-    background-image: linear-gradient(#fe4c73, #f54b92);
-    border: 3px solid #ce5fa9;
-  }
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px;
+    width: 180px;
+    color: #ffffff;
+    background-color: #e94560;
+    border: 3px solid #ff3e3e;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #ff3e3e;
+    transform: scale(1.1);
+}
+
+button:active {
+    background-color: #b4002f;
+    transform: scale(0.95);
+}
