@@ -7,11 +7,11 @@
 O jogo apresenta um sistema simples de combate, onde o jogador pode atacar, esquivar e tomar decisões estratégicas para sobreviver. A cada vitória, o personagem ganha ouro e experiência, podendo comprar armas melhores e aumentar suas chances contra inimigos mais fortes.
 
 <strong>Principais funcionalidades:</strong><br>
-✅ Estatísticas do jogador (XP, Vida, Ouro)<br>
-✅ Sistema de combate contra diferentes monstros<br>
-✅ Loja para comprar armas e recuperar vida<br>
-✅ Eventos aleatórios e surpresas escondidas<br>
-✅ Estilo visual aprimorado com cores temáticas e efeitos interativos<br>
+ 🔹Estatísticas do jogador (XP, Vida, Ouro)<br>
+ 🔹Sistema de combate contra diferentes monstros<br>
+ 🔹Loja para comprar armas e recuperar vida<br>
+ 🔹 Eventos aleatórios e surpresas escondidas<br>
+ 🔹Estilo visual aprimorado com cores temáticas e efeitos interativos<br>
 
 O objetivo final do jogo é derrotar o Dragão que está aterrorizando a cidade. Mas cuidado! Se sua vida chegar a zero, será o fim da aventura... ou será que você tentará novamente?<br>
 
