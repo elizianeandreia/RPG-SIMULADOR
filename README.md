@@ -1,23 +1,49 @@
-# RPG-SIMULADOR
+# Crônicas de Valdora
 
-<strong>RPG - Lutando Contra o Dragão 🐉⚔️</strong><br>
+Uma evolução do simulador **RPG - Lutando Contra o Dragão**, criada com HTML, CSS e JavaScript puro.
 
-"RPG - Lutando Contra o Dragão" é um jogo de aventura interativo baseado em texto, onde o jogador assume o papel de um herói que precisa enfrentar diversos desafios para derrotar um poderoso dragão. Durante a jornada, o jogador pode explorar diferentes locais, como a praça da cidade, uma caverna cheia de criaturas e uma loja onde é possível melhorar seu equipamento.
+O jogador cria um herói, escolhe uma classe e uma aparência, explora Valdora, enfrenta criaturas, conquista experiência e ouro, melhora o equipamento e se prepara para a batalha final contra Vharok.
 
-O jogo apresenta um sistema simples de combate, onde o jogador pode atacar, esquivar e tomar decisões estratégicas para sobreviver. A cada vitória, o personagem ganha ouro e experiência, podendo comprar armas melhores e aumentar suas chances contra inimigos mais fortes.
+## Principais recursos
 
-<strong>Principais funcionalidades:</strong><br>
- 🔹Estatísticas do jogador (XP, Vida, Ouro)<br>
- 🔹Sistema de combate contra diferentes monstros<br>
- 🔹Loja para comprar armas e recuperar vida<br>
- 🔹 Eventos aleatórios e surpresas escondidas<br>
- 🔹Estilo visual aprimorado com cores temáticas e efeitos interativos<br>
+- criador de personagem com nome, classe, tom de pele, cor do traje e cabelo;
+- três classes com atributos e habilidades diferentes;
+- herói, inimigos e personagem da loja renderizados juntos nas cenas;
+- personagens vetoriais gerados pelo próprio JavaScript, sem arquivos de imagem externos;
+- combate por turnos com ataque, habilidade, esquiva e recuo;
+- progressão por nível, ouro e equipamentos;
+- objetivo de desbloqueio do dragão claramente informado;
+- salvamento automático no `localStorage`;
+- controles por mouse, toque ou teclas de 1 a 4;
+- layout responsivo para computador, tablet e celular;
+- suporte a `prefers-reduced-motion`.
 
-O objetivo final do jogo é derrotar o Dragão que está aterrorizando a cidade. Mas cuidado! Se sua vida chegar a zero, será o fim da aventura... ou será que você tentará novamente?<br>
+## Como executar
 
-<strong>Tecnologias utilizadas:<br></strong>
-🔹 HTML, CSS e JavaScript puro<br>
-🔹 Interface minimalista e interativa<br>
-🔹 Estilização com efeitos modernos para maior imersão<br>
+Você pode abrir o arquivo `index.html` diretamente ou iniciar um servidor local na pasta do projeto:
 
-Prepare-se para a batalha e prove seu valor como guerreiro! 🏹🔥
+```bash
+python -m http.server 8000
+```
+
+Depois, acesse `http://127.0.0.1:8000` no navegador.
+
+## Estrutura
+
+```text
+index.html       Estrutura das telas de criação e jogo
+estilo.css       Direção visual, responsividade e animações
+script.js        Estado, progressão, combate, salvamento e SVGs
+GAME_DESIGN.md   Plano do loop, balanceamento e próximos passos
+```
+
+## Tecnologias
+
+- HTML5 semântico
+- CSS3 com variáveis, grid, animações e media queries
+- JavaScript ES2022 sem dependências
+- SVG inline para personagens e criaturas
+
+## Licença
+
+MIT License - Copyright (c) 2025 Eliziane Junckes.
