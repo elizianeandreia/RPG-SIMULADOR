@@ -114,7 +114,6 @@ summary:focus-visible {
   margin: 0 auto;
 }
 
-/* Character creator */
 
 .creator-screen {
   display: grid;
@@ -410,7 +409,10 @@ fieldset {
   cursor: pointer;
   color: var(--text-soft);
   background: rgba(4, 13, 14, 0.35);
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
@@ -425,7 +427,12 @@ fieldset {
 .class-card.is-selected {
   border-color: rgba(217, 184, 108, 0.52);
   color: var(--text);
-  background: linear-gradient(145deg, rgba(217, 184, 108, 0.13), rgba(76, 169, 155, 0.08));
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217, 184, 108, 0.13),
+      rgba(76, 169, 155, 0.08)
+    );
   box-shadow: inset 0 0 0 1px rgba(217, 184, 108, 0.08);
 }
 
@@ -474,7 +481,10 @@ fieldset {
   font-weight: 800;
   align-items: center;
   justify-content: space-between;
-  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
 }
 
 .primary-cta:hover {
@@ -498,7 +508,7 @@ fieldset {
   color: var(--text);
 }
 
-/* Game HUD */
+
 
 .game-screen {
   overflow: hidden;
@@ -537,7 +547,12 @@ fieldset {
   border: 1px solid rgba(217, 184, 108, 0.3);
   border-radius: 50%;
   color: var(--gold-light);
-  background: radial-gradient(circle, rgba(217, 184, 108, 0.13), transparent 70%);
+  background:
+    radial-gradient(
+      circle,
+      rgba(217, 184, 108, 0.13),
+      transparent 70%
+    );
   font-family: var(--font-display);
   font-weight: 700;
   place-items: center;
@@ -606,7 +621,10 @@ fieldset {
   color: var(--text-soft);
   background: rgba(255, 255, 255, 0.025);
   font-size: 1.05rem;
-  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
   place-items: center;
 }
 
@@ -622,7 +640,12 @@ fieldset {
   padding: 12px 20px;
   border-bottom: 1px solid var(--line);
   background: rgba(12, 28, 28, 0.74);
-  grid-template-columns: 72px minmax(150px, 1fr) minmax(150px, 1fr) 92px minmax(150px, 0.8fr);
+  grid-template-columns:
+    72px
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    92px
+    minmax(150px, 0.8fr);
   align-items: center;
   gap: 0;
 }
@@ -742,8 +765,16 @@ fieldset {
   z-index: -2;
   inset: 0;
   background:
-    linear-gradient(180deg, transparent 58%, rgba(4, 11, 12, 0.36)),
-    radial-gradient(circle at 50% 25%, rgba(250, 225, 165, 0.12), transparent 22rem);
+    linear-gradient(
+      180deg,
+      transparent 58%,
+      rgba(4, 11, 12, 0.36)
+    ),
+    radial-gradient(
+      circle at 50% 25%,
+      rgba(250, 225, 165, 0.12),
+      transparent 22rem
+    );
   content: "";
 }
 
@@ -761,57 +792,121 @@ fieldset {
 
 .scene-stage[data-scene="city"] {
   background:
-    linear-gradient(180deg, rgba(44, 89, 82, 0.42), rgba(15, 38, 38, 0.9)),
-    radial-gradient(circle at 75% 17%, #bba86f 0 3%, transparent 3.5%),
+    linear-gradient(
+      180deg,
+      rgba(44, 89, 82, 0.42),
+      rgba(15, 38, 38, 0.9)
+    ),
+    radial-gradient(
+      circle at 75% 17%,
+      #bba86f 0 3%,
+      transparent 3.5%
+    ),
     #183b3b;
 }
 
 .scene-stage[data-scene="shop"] {
   background:
-    linear-gradient(180deg, rgba(112, 76, 42, 0.28), rgba(29, 27, 24, 0.94)),
-    radial-gradient(circle at 68% 25%, rgba(237, 190, 107, 0.28), transparent 13rem),
+    linear-gradient(
+      180deg,
+      rgba(112, 76, 42, 0.28),
+      rgba(29, 27, 24, 0.94)
+    ),
+    radial-gradient(
+      circle at 68% 25%,
+      rgba(237, 190, 107, 0.28),
+      transparent 13rem
+    ),
     #30281f;
 }
 
 .scene-stage[data-scene="cave"] {
   background:
-    linear-gradient(180deg, rgba(60, 60, 91, 0.42), rgba(14, 22, 30, 0.94)),
-    radial-gradient(circle at 55% 65%, rgba(73, 168, 166, 0.16), transparent 18rem),
+    linear-gradient(
+      180deg,
+      rgba(60, 60, 91, 0.42),
+      rgba(14, 22, 30, 0.94)
+    ),
+    radial-gradient(
+      circle at 55% 65%,
+      rgba(73, 168, 166, 0.16),
+      transparent 18rem
+    ),
     #1a2530;
 }
 
 .scene-stage[data-scene="battle-slime"] {
   background:
-    linear-gradient(180deg, rgba(38, 84, 74, 0.44), rgba(14, 28, 29, 0.96)),
-    radial-gradient(circle at 70% 55%, rgba(95, 211, 164, 0.16), transparent 17rem),
+    linear-gradient(
+      180deg,
+      rgba(38, 84, 74, 0.44),
+      rgba(14, 28, 29, 0.96)
+    ),
+    radial-gradient(
+      circle at 70% 55%,
+      rgba(95, 211, 164, 0.16),
+      transparent 17rem
+    ),
     #142a29;
 }
 
 .scene-stage[data-scene="battle-beast"] {
   background:
-    linear-gradient(180deg, rgba(84, 61, 58, 0.45), rgba(29, 24, 27, 0.96)),
-    radial-gradient(circle at 72% 50%, rgba(204, 112, 84, 0.14), transparent 17rem),
+    linear-gradient(
+      180deg,
+      rgba(84, 61, 58, 0.45),
+      rgba(29, 24, 27, 0.96)
+    ),
+    radial-gradient(
+      circle at 72% 50%,
+      rgba(204, 112, 84, 0.14),
+      transparent 17rem
+    ),
     #2a2328;
 }
 
 .scene-stage[data-scene="battle-dragon"] {
   background:
-    linear-gradient(180deg, rgba(88, 45, 40, 0.5), rgba(27, 17, 21, 0.97)),
-    radial-gradient(circle at 68% 45%, rgba(234, 108, 66, 0.18), transparent 19rem),
+    linear-gradient(
+      180deg,
+      rgba(88, 45, 40, 0.5),
+      rgba(27, 17, 21, 0.97)
+    ),
+    radial-gradient(
+      circle at 68% 45%,
+      rgba(234, 108, 66, 0.18),
+      transparent 19rem
+    ),
     #2c1c20;
 }
 
 .scene-stage[data-scene="victory"] {
   background:
-    linear-gradient(180deg, rgba(92, 105, 77, 0.34), rgba(28, 45, 38, 0.95)),
-    radial-gradient(circle at 50% 18%, rgba(246, 219, 135, 0.28), transparent 18rem),
+    linear-gradient(
+      180deg,
+      rgba(92, 105, 77, 0.34),
+      rgba(28, 45, 38, 0.95)
+    ),
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(246, 219, 135, 0.28),
+      transparent 18rem
+    ),
     #20372f;
 }
 
 .scene-stage[data-scene="defeat"] {
   background:
-    linear-gradient(180deg, rgba(62, 59, 72, 0.42), rgba(18, 19, 25, 0.98)),
-    radial-gradient(circle at 50% 50%, rgba(117, 111, 134, 0.12), transparent 17rem),
+    linear-gradient(
+      180deg,
+      rgba(62, 59, 72, 0.42),
+      rgba(18, 19, 25, 0.98)
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(117, 111, 134, 0.12),
+      transparent 17rem
+    ),
     #1c1d25;
 }
 
@@ -819,7 +914,10 @@ fieldset {
   position: absolute;
   z-index: -1;
   opacity: 0.5;
-  transition: clip-path 300ms ease, background 300ms ease, opacity 300ms ease;
+  transition:
+    clip-path 300ms ease,
+    background 300ms ease,
+    opacity 300ms ease;
 }
 
 .backdrop-shape--one {
@@ -828,7 +926,18 @@ fieldset {
   width: 62%;
   height: 42%;
   background: rgba(5, 17, 17, 0.5);
-  clip-path: polygon(0 100%, 12% 44%, 24% 64%, 39% 20%, 51% 58%, 66% 29%, 78% 53%, 91% 18%, 100% 100%);
+  clip-path:
+    polygon(
+      0 100%,
+      12% 44%,
+      24% 64%,
+      39% 20%,
+      51% 58%,
+      66% 29%,
+      78% 53%,
+      91% 18%,
+      100% 100%
+    );
 }
 
 .backdrop-shape--two {
@@ -837,7 +946,25 @@ fieldset {
   width: 58%;
   height: 33%;
   background: rgba(8, 27, 27, 0.68);
-  clip-path: polygon(0 100%, 0 58%, 12% 58%, 12% 27%, 22% 27%, 22% 52%, 38% 52%, 38% 8%, 49% 8%, 49% 52%, 67% 52%, 67% 34%, 78% 34%, 78% 52%, 100% 52%, 100% 100%);
+  clip-path:
+    polygon(
+      0 100%,
+      0 58%,
+      12% 58%,
+      12% 27%,
+      22% 27%,
+      22% 52%,
+      38% 52%,
+      38% 8%,
+      49% 8%,
+      49% 52%,
+      67% 52%,
+      67% 34%,
+      78% 34%,
+      78% 52%,
+      100% 52%,
+      100% 100%
+    );
 }
 
 .backdrop-shape--three {
@@ -857,7 +984,17 @@ fieldset {
   width: 48%;
   height: 56%;
   background: rgba(36, 23, 15, 0.52);
-  clip-path: polygon(0 100%, 0 18%, 12% 18%, 12% 0, 88% 0, 88% 18%, 100% 18%, 100% 100%);
+  clip-path:
+    polygon(
+      0 100%,
+      0 18%,
+      12% 18%,
+      12% 0,
+      88% 0,
+      88% 18%,
+      100% 18%,
+      100% 100%
+    );
 }
 
 [data-scene="cave"] .backdrop-shape--one,
@@ -868,7 +1005,22 @@ fieldset {
   width: 100%;
   height: 34%;
   background: rgba(4, 9, 14, 0.48);
-  clip-path: polygon(0 0, 100% 0, 100% 35%, 89% 22%, 82% 74%, 70% 30%, 61% 88%, 51% 34%, 43% 76%, 33% 26%, 22% 67%, 11% 32%, 0 68%);
+  clip-path:
+    polygon(
+      0 0,
+      100% 0,
+      100% 35%,
+      89% 22%,
+      82% 74%,
+      70% 30%,
+      61% 88%,
+      51% 34%,
+      43% 76%,
+      33% 26%,
+      22% 67%,
+      11% 32%,
+      0 68%
+    );
 }
 
 [data-scene="victory"] .backdrop-shape--two {
@@ -976,8 +1128,16 @@ fieldset {
   height: 42%;
   border-radius: 50% 50% 0 0;
   background:
-    radial-gradient(ellipse at 50% 8%, rgba(220, 206, 160, 0.1), transparent 48%),
-    linear-gradient(180deg, rgba(8, 21, 21, 0.18), rgba(3, 10, 11, 0.72));
+    radial-gradient(
+      ellipse at 50% 8%,
+      rgba(220, 206, 160, 0.1),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(8, 21, 21, 0.18),
+      rgba(3, 10, 11, 0.72)
+    );
   transform: perspective(420px) rotateX(55deg);
 }
 
@@ -1077,8 +1237,16 @@ fieldset {
   min-width: 0;
   padding: 22px;
   background:
-    linear-gradient(180deg, rgba(16, 34, 33, 0.66), rgba(8, 19, 20, 0.82)),
-    radial-gradient(circle at 100% 0%, rgba(217, 184, 108, 0.06), transparent 20rem);
+    linear-gradient(
+      180deg,
+      rgba(16, 34, 33, 0.66),
+      rgba(8, 19, 20, 0.82)
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(217, 184, 108, 0.06),
+      transparent 20rem
+    );
   flex-direction: column;
 }
 
@@ -1130,7 +1298,11 @@ fieldset {
   align-items: flex-start;
   justify-content: center;
   text-align: left;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, opacity 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    opacity 160ms ease;
 }
 
 .action-button::after {
@@ -1165,17 +1337,32 @@ fieldset {
 
 .action-button--primary {
   border-color: rgba(76, 169, 155, 0.28);
-  background: linear-gradient(145deg, rgba(76, 169, 155, 0.13), rgba(255, 255, 255, 0.02));
+  background:
+    linear-gradient(
+      145deg,
+      rgba(76, 169, 155, 0.13),
+      rgba(255, 255, 255, 0.02)
+    );
 }
 
 .action-button--gold {
   border-color: rgba(217, 184, 108, 0.28);
-  background: linear-gradient(145deg, rgba(217, 184, 108, 0.12), rgba(255, 255, 255, 0.018));
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217, 184, 108, 0.12),
+      rgba(255, 255, 255, 0.018)
+    );
 }
 
 .action-button--danger {
   border-color: rgba(217, 111, 102, 0.28);
-  background: linear-gradient(145deg, rgba(217, 111, 102, 0.12), rgba(255, 255, 255, 0.018));
+  background:
+    linear-gradient(
+      145deg,
+      rgba(217, 111, 102, 0.12),
+      rgba(255, 255, 255, 0.018)
+    );
 }
 
 .action-label {
@@ -1262,7 +1449,9 @@ fieldset {
   font-size: 0.75rem;
   pointer-events: none;
   transform: translateY(12px);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .toast.is-visible {
@@ -1302,7 +1491,9 @@ fieldset {
 }
 
 .combatant.is-defeated .avatar--stage {
-  filter: grayscale(0.55) drop-shadow(0 14px 12px rgba(0, 0, 0, 0.3));
+  filter:
+    grayscale(0.55)
+    drop-shadow(0 14px 12px rgba(0, 0, 0, 0.3));
   opacity: 0.62;
   transform: rotate(8deg) translateY(22px);
 }
@@ -1381,32 +1572,75 @@ fieldset {
   background: rgba(217, 111, 102, 0.14);
 }
 
+
+
 @keyframes hero-lunge {
-  0%, 100% { transform: translateX(0) rotate(0); }
-  45% { transform: translateX(28px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  45% {
+    transform: translateX(28px) rotate(2deg);
+  }
 }
 
 @keyframes enemy-lunge {
-  0%, 100% { transform: translateX(0) rotate(0); }
-  45% { transform: translateX(-28px) rotate(-2deg); }
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  45% {
+    transform: translateX(-28px) rotate(-2deg);
+  }
 }
 
 @keyframes character-hit {
-  0%, 100% { transform: translateX(0); filter: brightness(1); }
-  22% { transform: translateX(-7px); filter: brightness(1.7) saturate(0.5); }
-  48% { transform: translateX(7px); }
-  72% { transform: translateX(-4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+    filter: brightness(1);
+  }
+
+  22% {
+    transform: translateX(-7px);
+    filter: brightness(1.7) saturate(0.5);
+  }
+
+  48% {
+    transform: translateX(7px);
+  }
+
+  72% {
+    transform: translateX(-4px);
+  }
 }
 
 @keyframes damage-rise {
-  0% { opacity: 0; transform: translate(-50%, 6px) scale(0.85); }
-  22% { opacity: 1; transform: translate(-50%, 0) scale(1.08); }
-  100% { opacity: 0; transform: translate(-50%, -44px) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.85);
+  }
+
+  22% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.08);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -44px) scale(1);
+  }
 }
+
+
 
 @media (max-width: 1050px) {
   .creator-screen {
-    grid-template-columns: minmax(0, 0.9fr) minmax(400px, 1.1fr);
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(400px, 1.1fr);
   }
 
   .creator-intro,
@@ -1424,7 +1658,12 @@ fieldset {
     bottom: 0;
     left: 0;
     padding: 38px 24px 24px;
-    background: linear-gradient(180deg, transparent, rgba(3, 10, 11, 0.88));
+    background:
+      linear-gradient(
+        180deg,
+        transparent,
+        rgba(3, 10, 11, 0.88)
+      );
   }
 
   .stats-bar {
@@ -1436,7 +1675,9 @@ fieldset {
   }
 
   .game-layout {
-    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.75fr);
+    grid-template-columns:
+      minmax(0, 1.35fr)
+      minmax(300px, 0.75fr);
   }
 
   .scene-stage {
@@ -1576,7 +1817,11 @@ fieldset {
 
   .stats-bar {
     overflow-x: auto;
-    grid-template-columns: 54px minmax(130px, 1fr) minmax(130px, 1fr) 68px;
+    grid-template-columns:
+      54px
+      minmax(130px, 1fr)
+      minmax(130px, 1fr)
+      68px;
   }
 
   .scene-stage {
