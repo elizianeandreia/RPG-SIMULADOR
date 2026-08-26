@@ -247,19 +247,32 @@ summary:focus-visible {
   z-index: 2;
 }
 
-.avatar svg {
+.avatar svg,
+.avatar img {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
+  object-fit: contain;
+  object-position: 50% 100%;
+  user-select: none;
   filter: drop-shadow(0 16px 14px rgba(0, 0, 0, 0.32));
 }
 
 .avatar--preview {
-  width: 230px;
-  height: 285px;
+  width: min(300px, 100%);
+  height: 365px;
   margin: 0 auto;
   align-self: end;
+}
+
+.character-art--slime,
+.character-art--beast {
+  transform: scale(0.94);
+}
+
+.character-art--dragon {
+  transform: scale(0.97);
 }
 
 .preview-copy {
@@ -434,66 +447,15 @@ fieldset {
   font-size: 1.15rem;
 }
 
-.appearance-grid {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.swatch-row,
-.hair-options {
-  display: flex;
-  gap: 9px;
-}
-
-.swatch {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
-  transition: transform 160ms ease, box-shadow 160ms ease;
-}
-
-.swatch:hover {
-  transform: scale(1.08);
-}
-
-.swatch.is-selected {
-  box-shadow:
-    0 0 0 2px var(--bg-900),
-    0 0 0 4px var(--gold);
-}
-
-.skin-swatch[data-skin="warm"] { background: #f0bc8c; }
-.skin-swatch[data-skin="golden"] { background: #ca895d; }
-.skin-swatch[data-skin="brown"] { background: #8c563d; }
-.skin-swatch[data-skin="deep"] { background: #553525; }
-.accent-swatch[data-accent="teal"] { background: #3f9688; }
-.accent-swatch[data-accent="blue"] { background: #557fb0; }
-.accent-swatch[data-accent="violet"] { background: #8066a7; }
-.accent-swatch[data-accent="ember"] { background: #a95d4f; }
-
-.hair-option {
-  min-height: 36px;
-  padding: 0 13px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  cursor: pointer;
-  color: var(--text-dim);
-  background: rgba(4, 13, 14, 0.32);
-  font-size: 0.72rem;
-  font-weight: 700;
-  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
-}
-
-.hair-option.is-selected {
-  border-color: rgba(217, 184, 108, 0.44);
-  color: var(--gold-light);
-  background: rgba(217, 184, 108, 0.08);
+.anime-art-note {
+  margin: 4px 0 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(217, 184, 108, 0.18);
+  border-radius: 11px;
+  color: var(--text-soft);
+  background: rgba(217, 184, 108, 0.055);
+  font-size: 0.78rem;
+  line-height: 1.55;
 }
 
 .primary-cta,
@@ -1043,7 +1005,7 @@ fieldset {
 
 .avatar--stage {
   width: 100%;
-  height: 310px;
+  height: 350px;
   transform-origin: 50% 100%;
 }
 
@@ -1486,7 +1448,7 @@ fieldset {
   }
 
   .avatar--stage {
-    height: 280px;
+    height: 315px;
   }
 }
 
@@ -1579,12 +1541,12 @@ fieldset {
   }
 
   .creator-preview {
-    min-height: 260px;
+    min-height: 330px;
   }
 
   .avatar--preview {
-    width: 205px;
-    height: 260px;
+    width: 235px;
+    height: 330px;
   }
 
   .class-grid {
@@ -1600,10 +1562,6 @@ fieldset {
   .class-icon {
     position: absolute;
     margin-left: -34px;
-  }
-
-  .appearance-grid {
-    gap: 18px;
   }
 
   .game-header {
@@ -1653,7 +1611,7 @@ fieldset {
   }
 
   .avatar--stage {
-    height: 225px;
+    height: 250px;
   }
 
   .combatant figcaption {
