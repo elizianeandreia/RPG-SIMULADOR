@@ -2,6 +2,16 @@
 
 const STORAGE_KEY = "cronicas-de-valdora-save-v2";
 
+const CHARACTER_ASSETS = {
+  guardian: "./assets/characters/guardian.webp",
+  hunter: "./assets/characters/hunter.webp",
+  arcanist: "./assets/characters/arcanist.webp",
+  merchant: "./assets/characters/merchant-maela.webp",
+  slime: "./assets/characters/slime-villain.webp",
+  beast: "./assets/characters/fang-beast.webp",
+  dragon: "./assets/characters/vharok-dragon.webp",
+};
+
 const CLASS_DATA = {
   guardian: {
     label: "Guardião",
@@ -58,20 +68,6 @@ const CLASS_DATA = {
     },
     weapons: ["Cajado de freixo", "Cajado de cristal", "Cetro astral", "Cetro de Valdora"],
   },
-};
-
-const SKIN_TONES = {
-  warm: "#efbb8a",
-  golden: "#ca895d",
-  brown: "#8c563d",
-  deep: "#553525",
-};
-
-const ACCENT_COLORS = {
-  teal: { base: "#3f9688", dark: "#255c56", light: "#76c9b6" },
-  blue: { base: "#557fb0", dark: "#354f78", light: "#8eb5db" },
-  violet: { base: "#8066a7", dark: "#4e3f6e", light: "#b39bd1" },
-  ember: { base: "#a95d4f", dark: "#6f3c36", light: "#d9977e" },
 };
 
 const WEAPON_TIERS = [
@@ -171,9 +167,6 @@ const ui = {
 
 let creatorConfig = {
   classId: "guardian",
-  skin: "warm",
-  accent: "teal",
-  hair: "short",
 };
 
 let state = null;
@@ -183,6 +176,7 @@ let saveStatusTimer = null;
 initialize();
 
 function initialize() {
+  preloadCharacterAssets();
   bindCreatorControls();
   bindGlobalControls();
   updateCreatorPreview();
@@ -198,30 +192,6 @@ function bindCreatorControls() {
     button.addEventListener("click", () => {
       creatorConfig.classId = button.dataset.class;
       selectButtonInGroup("[data-class]", button);
-      updateCreatorPreview();
-    });
-  });
-
-  document.querySelectorAll("[data-skin]").forEach((button) => {
-    button.addEventListener("click", () => {
-      creatorConfig.skin = button.dataset.skin;
-      selectButtonInGroup("[data-skin]", button);
-      updateCreatorPreview();
-    });
-  });
-
-  document.querySelectorAll("[data-accent]").forEach((button) => {
-    button.addEventListener("click", () => {
-      creatorConfig.accent = button.dataset.accent;
-      selectButtonInGroup("[data-accent]", button);
-      updateCreatorPreview();
-    });
-  });
-
-  document.querySelectorAll("[data-hair]").forEach((button) => {
-    button.addEventListener("click", () => {
-      creatorConfig.hair = button.dataset.hair;
-      selectButtonInGroup("[data-hair]", button);
       updateCreatorPreview();
     });
   });
@@ -278,7 +248,7 @@ function selectButtonInGroup(selector, selectedButton) {
 function updateCreatorPreview() {
   const heroName = ui.heroNameInput.value.trim() || "Seu herói";
   const heroClass = CLASS_DATA[creatorConfig.classId];
-  ui.creatorAvatar.innerHTML = renderHeroSvg(creatorConfig);
+  ui.creatorAvatar.innerHTML = renderHeroArt(creatorConfig);
   ui.previewName.textContent = heroName;
   ui.previewClass.textContent = `${heroClass.label} • ${heroClass.tagline}`;
 }
@@ -315,11 +285,8 @@ function createNewState(hero) {
 
 function normalizeHero(hero = {}) {
   const classId = CLASS_DATA[hero.classId] ? hero.classId : "guardian";
-  const skin = SKIN_TONES[hero.skin] ? hero.skin : "warm";
-  const accent = ACCENT_COLORS[hero.accent] ? hero.accent : "teal";
-  const hair = ["short", "crest", "long"].includes(hero.hair) ? hero.hair : "short";
   const rawName = typeof hero.name === "string" ? hero.name.trim().slice(0, 16) : "Aventureiro";
-  return { name: rawName || "Aventureiro", classId, skin, accent, hair };
+  return { name: rawName || "Aventureiro", classId };
 }
 
 function showGame() {
@@ -472,7 +439,7 @@ function renderScene() {
   ui.sceneTitle.textContent = presentation.title;
   ui.storyText.textContent = state.message;
   ui.questText.textContent = getQuestText();
-  ui.heroAvatar.innerHTML = renderHeroSvg(state.hero);
+  ui.heroAvatar.innerHTML = renderHeroArt(state.hero);
   ui.heroStageName.textContent = state.hero.name;
   ui.heroStageRole.textContent = heroClass.label;
 
@@ -484,7 +451,7 @@ function renderScene() {
 
   if (presentation.partner) {
     ui.partnerFigure.hidden = false;
-    ui.partnerAvatar.innerHTML = presentation.partner.svg;
+    ui.partnerAvatar.innerHTML = presentation.partner.art;
     ui.partnerName.textContent = presentation.partner.name;
     ui.partnerRole.textContent = presentation.partner.role;
     ui.versusMark.hidden = !presentation.partner.hostile;
@@ -506,7 +473,7 @@ function getScenePresentation() {
         role: "Derrotado",
         hostile: true,
         defeated: true,
-        svg: renderEnemySvg("dragon"),
+        art: renderEnemyArt("dragon"),
       },
     };
   }
@@ -523,7 +490,7 @@ function getScenePresentation() {
         name: monster.name,
         role: monster.role,
         hostile: true,
-        svg: renderEnemySvg(monsterId),
+        art: renderEnemyArt(monsterId),
       },
     };
   }
@@ -539,7 +506,7 @@ function getScenePresentation() {
         name: monster.name,
         role: monster.role,
         hostile: true,
-        svg: renderEnemySvg(state.battle.monsterId),
+        art: renderEnemyArt(state.battle.monsterId),
       },
     };
   }
@@ -554,7 +521,7 @@ function getScenePresentation() {
         name: "Maela",
         role: "Mestra ferreira",
         hostile: false,
-        svg: renderMerchantSvg(),
+        art: renderMerchantArt(),
       },
     };
   }
@@ -1087,153 +1054,27 @@ function randomInt(minimum, maximum) {
   return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 }
 
-function renderHeroSvg(hero) {
-  const safeHero = normalizeHero(hero);
-  const skin = SKIN_TONES[safeHero.skin];
-  const accent = ACCENT_COLORS[safeHero.accent];
-  const outline = "#172727";
-  const hairColor = safeHero.skin === "deep" ? "#171516" : "#2a211d";
-  const hairBack = safeHero.hair === "long"
-    ? `<path d="M62 65 C62 36 118 35 120 67 L125 114 C112 125 70 124 56 111 Z" fill="${hairColor}" stroke="${outline}" stroke-width="3"/>`
-    : "";
-  const hairFront = {
-    short: `<path d="M62 68 C60 42 75 31 91 32 C111 32 122 47 119 67 C108 58 95 54 78 56 C72 60 67 65 62 68 Z" fill="${hairColor}" stroke="${outline}" stroke-width="3"/>`,
-    crest: `<path d="M65 66 C65 47 76 38 88 37 C88 27 95 17 104 14 C104 27 110 32 116 38 C120 45 120 56 117 66 C104 56 78 54 65 66 Z" fill="${hairColor}" stroke="${outline}" stroke-width="3"/>`,
-    long: `<path d="M61 68 C59 43 74 31 91 31 C111 31 122 46 120 67 C108 57 96 53 78 56 C71 60 66 65 61 68 Z" fill="${hairColor}" stroke="${outline}" stroke-width="3"/>`,
-  }[safeHero.hair];
-
-  const classGear = {
-    guardian: `
-      <path d="M36 124 L21 191" stroke="#d8cfb5" stroke-width="5" stroke-linecap="round"/>
-      <path d="M17 193 L27 190 L22 211 Z" fill="#d9b86c" stroke="${outline}" stroke-width="3"/>
-      <path d="M124 125 C148 119 159 129 158 156 C157 181 143 198 124 207 C105 198 94 181 93 156 C92 132 103 122 124 125 Z" fill="${accent.dark}" stroke="#d7c58f" stroke-width="4"/>
-      <path d="M124 137 L124 190 M106 157 L143 157" stroke="${accent.light}" stroke-width="4" stroke-linecap="round"/>
-    `,
-    hunter: `
-      <path d="M139 105 C166 128 166 181 137 210" fill="none" stroke="#b98d58" stroke-width="5" stroke-linecap="round"/>
-      <path d="M139 105 L137 210" stroke="#dbcaa7" stroke-width="2"/>
-      <path d="M45 91 L58 142" stroke="#775437" stroke-width="10" stroke-linecap="round"/>
-      <path d="M38 84 L51 82 L61 129 L49 132 Z" fill="#6b4b32" stroke="${outline}" stroke-width="3"/>
-      <path d="M42 77 L48 98 M48 76 L53 97 M54 77 L58 99" stroke="#d8cfb5" stroke-width="2"/>
-    `,
-    arcanist: `
-      <path d="M139 93 L139 214" stroke="#70543c" stroke-width="7" stroke-linecap="round"/>
-      <circle cx="139" cy="82" r="16" fill="${accent.light}" opacity="0.2"/>
-      <path d="M139 63 L148 80 L139 96 L130 80 Z" fill="${accent.light}" stroke="#e5d8ac" stroke-width="3"/>
-      <path d="M55 111 L42 211 L90 225 L137 211 L124 111 Z" fill="${accent.dark}" stroke="${outline}" stroke-width="4"/>
-      <path d="M90 119 L90 215" stroke="${accent.light}" stroke-width="3" opacity="0.75"/>
-    `,
-  }[safeHero.classId];
-
-  return `
-    <svg viewBox="0 0 180 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Personagem ${CLASS_DATA[safeHero.classId].label}">
-      <ellipse cx="90" cy="226" rx="59" ry="10" fill="#020909" opacity="0.36"/>
-      ${hairBack}
-      <path d="M66 113 C54 122 48 153 50 188 L75 193 L90 160 L104 193 L132 188 C132 150 125 122 114 113 Z" fill="${accent.dark}" stroke="${outline}" stroke-width="4"/>
-      <path d="M71 184 L65 222 L82 225 L91 188 Z" fill="#273737" stroke="${outline}" stroke-width="4"/>
-      <path d="M109 184 L116 222 L99 225 L90 188 Z" fill="#273737" stroke="${outline}" stroke-width="4"/>
-      <path d="M62 218 L84 218 L84 230 L56 230 C55 225 57 221 62 218 Z" fill="#171f20" stroke="${outline}" stroke-width="3"/>
-      <path d="M118 218 L97 218 L97 230 L125 230 C126 225 123 221 118 218 Z" fill="#171f20" stroke="${outline}" stroke-width="3"/>
-      <path d="M68 105 C77 99 103 99 113 105 L124 154 C113 166 69 166 56 154 Z" fill="${accent.base}" stroke="${outline}" stroke-width="4"/>
-      <path d="M62 126 L117 126" stroke="${accent.light}" stroke-width="4" opacity="0.7"/>
-      <path d="M64 112 C46 117 37 133 35 153" fill="none" stroke="${skin}" stroke-width="14" stroke-linecap="round"/>
-      <circle cx="34" cy="158" r="8" fill="${skin}" stroke="${outline}" stroke-width="3"/>
-      <path d="M117 112 C135 118 141 134 142 150" fill="none" stroke="${skin}" stroke-width="14" stroke-linecap="round"/>
-      <circle cx="142" cy="156" r="8" fill="${skin}" stroke="${outline}" stroke-width="3"/>
-      <rect x="81" y="91" width="18" height="21" rx="8" fill="${skin}" stroke="${outline}" stroke-width="3"/>
-      <ellipse cx="90" cy="67" rx="30" ry="36" fill="${skin}" stroke="${outline}" stroke-width="4"/>
-      ${hairFront}
-      <ellipse cx="79" cy="68" rx="3.5" ry="4" fill="#172323"/>
-      <ellipse cx="102" cy="68" rx="3.5" ry="4" fill="#172323"/>
-      <path d="M83 84 C88 88 95 88 100 84" fill="none" stroke="#7f4b3e" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M72 101 L90 113 L108 101 L113 112 C101 121 80 121 67 112 Z" fill="#d9b86c" stroke="${outline}" stroke-width="3"/>
-      ${classGear}
-    </svg>
-  `;
+function preloadCharacterAssets() {
+  if (typeof Image !== "function") return;
+  Object.values(CHARACTER_ASSETS).forEach((source) => {
+    const image = new Image();
+    image.src = source;
+  });
 }
 
-function renderMerchantSvg() {
-  return `
-    <svg viewBox="0 0 180 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Maela, mestra ferreira">
-      <ellipse cx="90" cy="226" rx="58" ry="10" fill="#020909" opacity="0.36"/>
-      <path d="M62 102 C50 123 45 168 52 218 L128 218 C135 169 129 123 117 102 Z" fill="#6d4434" stroke="#211d1b" stroke-width="4"/>
-      <path d="M67 112 L90 130 L113 112 L121 208 L59 208 Z" fill="#98704b" stroke="#211d1b" stroke-width="4"/>
-      <path d="M55 132 L35 166" stroke="#c98762" stroke-width="14" stroke-linecap="round"/>
-      <path d="M125 132 L145 166" stroke="#c98762" stroke-width="14" stroke-linecap="round"/>
-      <circle cx="33" cy="171" r="8" fill="#c98762" stroke="#211d1b" stroke-width="3"/>
-      <circle cx="147" cy="171" r="8" fill="#c98762" stroke="#211d1b" stroke-width="3"/>
-      <rect x="81" y="88" width="18" height="21" rx="8" fill="#c98762" stroke="#211d1b" stroke-width="3"/>
-      <ellipse cx="90" cy="65" rx="29" ry="35" fill="#c98762" stroke="#211d1b" stroke-width="4"/>
-      <path d="M62 68 C57 45 72 29 91 29 C112 29 124 47 118 69 C107 57 74 56 62 68 Z" fill="#29211e" stroke="#211d1b" stroke-width="3"/>
-      <path d="M67 77 C70 104 111 104 114 77 C107 91 75 91 67 77 Z" fill="#3b2b25" stroke="#211d1b" stroke-width="3"/>
-      <circle cx="80" cy="66" r="3" fill="#1b2221"/>
-      <circle cx="101" cy="66" r="3" fill="#1b2221"/>
-      <path d="M84 78 C88 81 93 81 97 78" fill="none" stroke="#744537" stroke-width="2"/>
-      <path d="M56 154 L124 154" stroke="#d9b86c" stroke-width="5"/>
-      <path d="M133 102 L151 210" stroke="#625143" stroke-width="7" stroke-linecap="round"/>
-      <path d="M132 101 C140 91 155 94 160 105 C163 114 157 123 150 128 L142 118 C147 114 148 108 143 105 C139 103 136 106 133 109 Z" fill="#9da6a0" stroke="#211d1b" stroke-width="3"/>
-    </svg>
-  `;
+function renderCharacterArt(characterId) {
+  const source = CHARACTER_ASSETS[characterId] || CHARACTER_ASSETS.guardian;
+  return `<img class="character-art character-art--${characterId}" src="${source}" alt="" draggable="false" decoding="async" />`;
 }
 
-function renderEnemySvg(monsterId) {
-  if (monsterId === "slime") {
-    return `
-      <svg viewBox="0 0 180 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lodo esmeralda">
-        <ellipse cx="90" cy="220" rx="63" ry="12" fill="#020909" opacity="0.35"/>
-        <path d="M32 194 C29 168 42 147 55 133 C46 94 69 65 92 65 C117 65 137 92 128 132 C144 147 153 171 147 196 C131 214 50 215 32 194 Z" fill="#55a979" stroke="#17352d" stroke-width="5"/>
-        <path d="M48 178 C66 194 113 195 135 178" fill="none" stroke="#8bd3a1" stroke-width="6" opacity="0.5"/>
-        <ellipse cx="73" cy="136" rx="8" ry="12" fill="#122926"/>
-        <ellipse cx="110" cy="136" rx="8" ry="12" fill="#122926"/>
-        <circle cx="70" cy="132" r="2.5" fill="#d9f5d9"/>
-        <circle cx="107" cy="132" r="2.5" fill="#d9f5d9"/>
-        <path d="M72 162 C82 170 99 170 110 161" fill="none" stroke="#254d3f" stroke-width="5" stroke-linecap="round"/>
-        <circle cx="55" cy="105" r="10" fill="#80c99a" opacity="0.6"/>
-        <circle cx="127" cy="91" r="6" fill="#80c99a" opacity="0.5"/>
-      </svg>
-    `;
-  }
+function renderHeroArt(hero) {
+  return renderCharacterArt(normalizeHero(hero).classId);
+}
 
-  if (monsterId === "beast") {
-    return `
-      <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Besta das presas">
-        <ellipse cx="101" cy="220" rx="77" ry="11" fill="#020909" opacity="0.38"/>
-        <path d="M51 131 C67 102 118 98 146 123 C159 136 163 170 148 193 L62 193 C43 174 39 151 51 131 Z" fill="#69514e" stroke="#241d20" stroke-width="5"/>
-        <path d="M43 142 C18 131 17 107 30 91 C29 111 43 116 58 118" fill="none" stroke="#5b4544" stroke-width="12" stroke-linecap="round"/>
-        <path d="M61 185 L53 219 L72 221 L82 188" fill="#46383a" stroke="#241d20" stroke-width="5"/>
-        <path d="M132 185 L141 219 L160 219 L151 181" fill="#46383a" stroke="#241d20" stroke-width="5"/>
-        <path d="M118 103 C120 71 143 52 169 62 C187 70 190 99 176 121 C165 138 139 144 119 130 Z" fill="#765a55" stroke="#241d20" stroke-width="5"/>
-        <path d="M132 72 L133 42 L153 64" fill="#765a55" stroke="#241d20" stroke-width="5"/>
-        <path d="M164 66 L184 43 L183 80" fill="#765a55" stroke="#241d20" stroke-width="5"/>
-        <path d="M139 108 C151 119 174 116 181 104 C180 126 159 139 140 128 Z" fill="#392b2e" stroke="#241d20" stroke-width="4"/>
-        <path d="M145 116 L151 137 L158 119 M169 116 L171 135 L178 110" fill="#eadfbd" stroke="#6c6252" stroke-width="2"/>
-        <ellipse cx="145" cy="89" rx="5" ry="6" fill="#d99a56"/>
-        <ellipse cx="173" cy="88" rx="5" ry="6" fill="#d99a56"/>
-        <circle cx="146" cy="89" r="2" fill="#1b1517"/>
-        <circle cx="174" cy="88" r="2" fill="#1b1517"/>
-        <path d="M79 111 L92 93 L101 110 L112 92 L124 111" fill="#84645d" stroke="#241d20" stroke-width="4"/>
-      </svg>
-    `;
-  }
+function renderMerchantArt() {
+  return renderCharacterArt("merchant");
+}
 
-  return `
-    <svg viewBox="0 0 230 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vharok, o dragão">
-      <ellipse cx="120" cy="220" rx="91" ry="12" fill="#020909" opacity="0.42"/>
-      <path d="M83 112 C43 65 20 73 22 124 C24 155 47 171 73 171 C55 147 56 126 83 112 Z" fill="#713d3a" stroke="#2b1c20" stroke-width="5"/>
-      <path d="M154 111 C193 62 218 72 216 123 C214 154 191 170 165 170 C183 145 181 126 154 111 Z" fill="#713d3a" stroke="#2b1c20" stroke-width="5"/>
-      <path d="M45 102 L69 151 M196 101 L171 151" stroke="#ae6354" stroke-width="4" opacity="0.7"/>
-      <path d="M76 124 C89 94 151 91 166 126 C179 158 165 198 139 211 L96 210 C70 191 63 154 76 124 Z" fill="#8b4b42" stroke="#2b1c20" stroke-width="6"/>
-      <path d="M89 184 L78 220 L100 222 L111 190" fill="#683a37" stroke="#2b1c20" stroke-width="5"/>
-      <path d="M150 183 L161 220 L139 222 L128 190" fill="#683a37" stroke="#2b1c20" stroke-width="5"/>
-      <path d="M154 166 C194 170 211 193 205 211 C195 200 179 199 158 203" fill="none" stroke="#8b4b42" stroke-width="18" stroke-linecap="round"/>
-      <path d="M96 105 C90 71 103 43 123 38 C149 33 170 60 163 96 C158 119 142 132 119 132 C102 132 94 120 96 105 Z" fill="#9a5145" stroke="#2b1c20" stroke-width="6"/>
-      <path d="M105 47 L99 19 L119 40 M146 43 L160 17 L161 55" fill="#d6b56d" stroke="#2b1c20" stroke-width="5"/>
-      <path d="M105 102 C118 112 146 110 158 97 C158 120 143 136 122 135 C106 134 98 122 105 102 Z" fill="#4b2828" stroke="#2b1c20" stroke-width="4"/>
-      <path d="M113 108 L118 129 L126 110 M143 107 L140 128 L151 103" fill="#efe1bd" stroke="#756957" stroke-width="2"/>
-      <ellipse cx="112" cy="79" rx="6" ry="7" fill="#f2b94f"/>
-      <ellipse cx="146" cy="76" rx="6" ry="7" fill="#f2b94f"/>
-      <path d="M112 79 L116 78 M146 76 L150 75" stroke="#21191a" stroke-width="3"/>
-      <path d="M90 142 L102 126 L111 144 L122 126 L132 144 L145 126 L154 145" fill="none" stroke="#b86b58" stroke-width="6"/>
-    </svg>
-  `;
+function renderEnemyArt(monsterId) {
+  return renderCharacterArt(MONSTERS[monsterId] ? monsterId : "slime");
 }
