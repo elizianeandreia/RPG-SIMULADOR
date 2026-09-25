@@ -1621,3 +1621,795 @@ async function startBattle(monsterId) {
   renderActions();
   saveGame();
 }
+
+async function performPlayerAttack(mode) {
+  if (!state || state.busy || !state.battle) {
+    return;
+  }
+
+  const heroClass = CLASS_DATA[state.hero.classId];
+
+  if (
+    mode === "skill" &&
+    state.battle.skillCooldown > 0
+  ) {
+    return;
+  }
+
+  const currentGame = state;
+  const currentBattle = state.battle;
+
+  state.busy = true;
+  renderActions();
+
+  const multiplier = mode === "skill"
+    ? heroClass.skill.multiplier
+    : 1;
+
+  const attack = calculatePlayerDamage(
+    multiplier,
+    mode === "skill"
+  );
+
+  let actionSummary =
+    `${state.hero.name} causa ${attack.damage} de dano`;
+
+  if (mode === "skill") {
+    actionSummary =
+      `${state.hero.name} usa ${heroClass.skill.name} ` +
+      `e causa ${attack.damage} de dano`;
+
+    state.battle.skillCooldown =
+      heroClass.skill.cooldown;
+  }
+
+  if (attack.critical) {
+    actionSummary += " com um acerto crítico";
+  }
+
+  actionSummary += ".";
+
+  await animateStrike(
+    ui.heroFigure,
+    ui.partnerFigure,
+    attack.damage
+  );
+
+  if (!isCurrentBattle(currentGame, currentBattle)) {
+    return;
+  }
+
+  state.battle.health = Math.max(
+    0,
+    state.battle.health - attack.damage
+  );
+
+  if (mode === "skill" && heroClass.skill.healing) {
+    const recovered = Math.min(
+      heroClass.skill.healing,
+      getMaxHealth(state) - state.health
+    );
+
+    if (recovered > 0) {
+      state.health += recovered;
+
+      actionSummary +=
+        ` A chama devolve ${recovered} de vida.`;
+
+      showFloatingNumber(
+        ui.heroFigure,
+        `+${recovered}`,
+        true
+      );
+    }
+  }
+
+  state.message = actionSummary;
+
+  updateStats();
+  updateBattleHud();
+
+  ui.storyText.textContent = state.message;
+
+  saveGame();
+
+  if (state.battle.health <= 0) {
+    await waitMs(350);
+
+    if (isCurrentBattle(currentGame, currentBattle)) {
+      resolveBattleVictory();
+    }
+
+    return;
+  }
+
+  await waitMs(250);
+
+  if (!isCurrentBattle(currentGame, currentBattle)) {
+    return;
+  }
+
+  await enemyTurn({
+    actionSummary,
+    usedSkill: mode === "skill",
+    protection: mode === "skill"
+      ? heroClass.skill.protection || 0
+      : 0,
+    dodge: false
+  });
+}
+
+function calculatePlayerDamage(
+  multiplier,
+  forceCriticalBoost
+) {
+  const heroClass = CLASS_DATA[state.hero.classId];
+  const level = getLevelInfo(state.xp).level;
+  const weaponPower =
+    WEAPON_TIERS[state.weaponTier].power;
+
+  const baseDamage =
+    weaponPower +
+    heroClass.attackBonus +
+    level * 2 +
+    randomInt(0, 4);
+
+  const criticalChance =
+    forceCriticalBoost &&
+    state.hero.classId === "hunter"
+      ? Math.min(
+          0.55,
+          heroClass.criticalChance + 0.2
+        )
+      : heroClass.criticalChance;
+
+  const critical = Math.random() < criticalChance;
+
+  return {
+    damage: Math.max(
+      1,
+      Math.round(
+        baseDamage *
+        multiplier *
+        (critical ? 1.45 : 1)
+      )
+    ),
+    critical
+  };
+}
+
+async function performDodge() {
+  if (!state || state.busy || !state.battle) {
+    return;
+  }
+
+  const currentGame = state;
+  const currentBattle = state.battle;
+
+  state.busy = true;
+
+  state.message =
+    `${state.hero.name} observa o movimento ` +
+    "do inimigo e prepara a esquiva.";
+
+  ui.storyText.textContent = state.message;
+
+  renderActions();
+  saveGame();
+
+  await waitMs(250);
+
+  if (!isCurrentBattle(currentGame, currentBattle)) {
+    return;
+  }
+
+  await enemyTurn({
+    actionSummary:
+      `${state.hero.name} tenta antecipar ` +
+      "o próximo golpe.",
+    usedSkill: false,
+    protection: 0,
+    dodge: true
+  });
+}
+
+async function enemyTurn(context) {
+  if (!state || !state.battle) {
+    return;
+  }
+
+  const currentGame = state;
+  const currentBattle = state.battle;
+
+  const monster = MONSTERS[state.battle.monsterId];
+  const heroClass = CLASS_DATA[state.hero.classId];
+
+  const dodged =
+    context.dodge &&
+    Math.random() < heroClass.dodgeChance;
+
+  let damage = 0;
+
+  if (dodged) {
+    await animateMiss(
+      ui.partnerFigure,
+      ui.heroFigure
+    );
+  } else {
+    const rawDamage = randomInt(
+      monster.minDamage,
+      monster.maxDamage
+    );
+
+    const reduction = Math.min(
+      0.75,
+      heroClass.defense + context.protection
+    );
+
+    damage = Math.max(
+      1,
+      Math.round(rawDamage * (1 - reduction))
+    );
+
+    await animateStrike(
+      ui.partnerFigure,
+      ui.heroFigure,
+      damage
+    );
+  }
+
+  if (!isCurrentBattle(currentGame, currentBattle)) {
+    return;
+  }
+
+  if (!dodged) {
+    state.health = Math.max(
+      0,
+      state.health - damage
+    );
+  }
+
+  if (
+    !context.usedSkill &&
+    state.battle.skillCooldown > 0
+  ) {
+    state.battle.skillCooldown -= 1;
+  }
+
+  state.battle.turn += 1;
+
+  if (dodged) {
+    state.message =
+      `${context.actionSummary} ` +
+      `A esquiva funciona: ${monster.name} ` +
+      "erra o ataque.";
+  } else {
+    state.message =
+      `${context.actionSummary} ` +
+      `${monster.name} responde e causa ` +
+      `${damage} de dano.`;
+  }
+
+  updateStats();
+  updateBattleHud();
+
+  ui.storyText.textContent = state.message;
+
+  if (state.health <= 0) {
+    saveGame();
+
+    await waitMs(350);
+
+    if (isCurrentBattle(currentGame, currentBattle)) {
+      resolveDefeat();
+    }
+
+    return;
+  }
+
+  state.busy = false;
+
+  renderActions();
+  saveGame();
+}
+
+function isCurrentBattle(game, battle) {
+  return (
+    state === game &&
+    state.battle === battle &&
+    state.phase === "playing"
+  );
+}
+
+function fleeBattle() {
+  if (!state || state.busy || !state.battle) {
+    return;
+  }
+
+  const monsterId = state.battle.monsterId;
+  const monsterName = MONSTERS[monsterId].name;
+
+  state.battle = null;
+
+  state.location = monsterId === "dragon"
+    ? "city"
+    : "cave";
+
+  state.busy = false;
+
+  state.message =
+    `${state.hero.name} recua diante de ` +
+    `${monsterName}. A batalha termina sem ` +
+    "recompensas, mas a vida atual é preservada.";
+
+  renderAll();
+  saveGame();
+}
+
+function resolveBattleVictory() {
+  if (!state || !state.battle) {
+    return;
+  }
+
+  const monsterId = state.battle.monsterId;
+  const monster = MONSTERS[monsterId];
+
+  const previousLevel = getLevelInfo(state.xp).level;
+  const wasUnlocked = isDragonUnlocked();
+
+  state.xp += monster.xp;
+  state.gold += monster.gold;
+  state.lastMonsterId = monsterId;
+  state.battle = null;
+  state.busy = false;
+
+  if (monsterId === "dragon") {
+    state.phase = "victory";
+
+    state.message =
+      `${state.hero.name} derrota Vharok. ` +
+      "As asas do dragão silenciam e os " +
+      "portões de Valdora voltam a se abrir.";
+
+    renderAll();
+    saveGame();
+
+    showToast("Vitória! Valdora está livre.");
+
+    return;
+  }
+
+  state.defeated[monsterId] += 1;
+  state.location = "cave";
+
+  const newLevel = getLevelInfo(state.xp).level;
+
+  let levelMessage = "";
+
+  if (newLevel > previousLevel) {
+    const recovered = Math.min(
+      getMaxHealth(state) - state.health,
+      18 * (newLevel - previousLevel)
+    );
+
+    state.health += Math.max(0, recovered);
+
+    levelMessage =
+      ` Você alcançou o nível ${newLevel} ` +
+      `e recuperou ${Math.max(0, recovered)} de vida.`;
+  }
+
+  state.message =
+    `${monster.name} foi derrotado. ` +
+    `Recompensa: ${monster.xp} XP e ` +
+    `${monster.gold} de ouro.` +
+    levelMessage;
+
+  const unlockedNow =
+    !wasUnlocked && isDragonUnlocked();
+
+  renderAll();
+  saveGame();
+
+  showToast(
+    unlockedNow
+      ? "O Portão do Dragão foi liberado!"
+      : `+${monster.xp} XP • +${monster.gold} ouro`
+  );
+}
+
+function resolveDefeat() {
+  if (!state || state.phase !== "playing") {
+    return;
+  }
+
+  const monster =
+    MONSTERS[state.lastMonsterId] ||
+    MONSTERS.dragon;
+
+  state.phase = "defeat";
+  state.battle = null;
+  state.busy = false;
+
+  state.message =
+    `${state.hero.name} cai diante de ` +
+    `${monster.name}. A experiência da jornada ` +
+    "permanece como aprendizado — você pode " +
+    "tentar novamente.";
+
+  renderAll();
+  saveGame();
+}
+
+function restartWithSameHero() {
+  if (!state) {
+    return;
+  }
+
+  const hero = { ...state.hero };
+
+  state = createNewState(hero);
+
+  state.message =
+    `${hero.name} retorna à praça com uma ` +
+    "nova estratégia. A jornada recomeça.";
+
+  renderAll();
+  saveGame();
+}
+
+function isDragonUnlocked() {
+  if (!state) {
+    return false;
+  }
+
+  return (
+    getLevelInfo(state.xp).level >= 4 &&
+    state.weaponTier >= 2
+  );
+}
+
+async function animateStrike(attacker, target, damage) {
+  if (!attacker || !target) {
+    return;
+  }
+
+  const currentGame = state;
+
+  attacker.classList.remove("is-attacking");
+  target.classList.remove("is-hit", "is-dodging");
+
+  void attacker.offsetWidth;
+
+  attacker.classList.add("is-attacking");
+
+  const isHero = attacker === ui.heroFigure;
+
+  const characterId = isHero
+    ? state.hero.classId
+    : state.battle?.monsterId;
+
+  let projectile = null;
+
+  if (isHero) {
+    if (characterId === "hunter") {
+      projectile = "arrow";
+    } else if (characterId === "arcanist") {
+      projectile = "arcane";
+    }
+  } else if (characterId === "dragon") {
+    projectile = "flame";
+  }
+
+  if (projectile) {
+    await waitMs(170);
+
+    if (state !== currentGame) {
+      attacker.classList.remove("is-attacking");
+      return;
+    }
+
+    await launchProjectile(
+      attacker,
+      target,
+      projectile
+    );
+  } else {
+    await waitMs(310);
+  }
+
+  if (state !== currentGame) {
+    attacker.classList.remove("is-attacking");
+    return;
+  }
+
+  target.classList.add("is-hit");
+
+  let impactType = characterId;
+
+  if (characterId === "arcanist") {
+    impactType = "arcane";
+  }
+
+  if (characterId === "dragon") {
+    impactType = "flame";
+    shakeArena();
+  }
+
+  if (characterId === "beast") {
+    shakeArena();
+  }
+
+  createImpact(target, impactType);
+
+  showFloatingNumber(
+    target,
+    `-${damage}`,
+    false
+  );
+
+  await waitMs(390);
+
+  attacker.classList.remove("is-attacking");
+  target.classList.remove("is-hit");
+}
+
+async function animateMiss(attacker, target) {
+  if (!attacker || !target) {
+    return;
+  }
+
+  attacker.classList.remove("is-attacking");
+  target.classList.remove("is-dodging");
+
+  void attacker.offsetWidth;
+
+  attacker.classList.add("is-attacking");
+  target.classList.add("is-dodging");
+
+  await waitMs(270);
+
+  showFloatingNumber(
+    target,
+    "ESQUIVA",
+    false,
+    true
+  );
+
+  await waitMs(350);
+
+  attacker.classList.remove("is-attacking");
+  target.classList.remove("is-dodging");
+}
+
+async function launchProjectile(attacker, target, type) {
+  if (
+    !ui.sceneStage ||
+    !attacker ||
+    !target
+  ) {
+    return;
+  }
+
+  const stage = ui.sceneStage.getBoundingClientRect();
+  const source = attacker.getBoundingClientRect();
+  const destination = target.getBoundingClientRect();
+
+  const isHero = attacker === ui.heroFigure;
+
+  const startX = isHero
+    ? source.right - source.width * 0.25
+    : source.left + source.width * 0.25;
+
+  const startY =
+    source.top + source.height * 0.38;
+
+  const endX = isHero
+    ? destination.left + destination.width * 0.35
+    : destination.right - destination.width * 0.35;
+
+  const endY =
+    destination.top + destination.height * 0.38;
+
+  const projectile = document.createElement("span");
+
+  projectile.className =
+    `combat-projectile combat-projectile--${type}`;
+
+  projectile.style.left =
+    `${startX - stage.left}px`;
+
+  projectile.style.top =
+    `${startY - stage.top}px`;
+
+  ui.sceneStage.append(projectile);
+
+  const distanceX = endX - startX;
+  const distanceY = endY - startY;
+
+  const direction = isHero ? 1 : -1;
+
+  try {
+    await runFigureMotion(
+      projectile,
+      [
+        {
+          transform:
+            `translate(0px, 0px) scaleX(${direction})`,
+          opacity: 0.8
+        },
+        {
+          transform:
+            `translate(${distanceX}px, ${distanceY}px) ` +
+            `scaleX(${direction})`,
+          opacity: 1
+        }
+      ],
+      {
+        duration: type === "flame" ? 450 : 330,
+        easing: "ease-in",
+        fill: "forwards"
+      }
+    );
+  } finally {
+    projectile.remove();
+  }
+}
+
+function createImpact(target, type = "guardian") {
+  if (!target) {
+    return;
+  }
+
+  const impact = document.createElement("span");
+
+  const allowedTypes = [
+    "guardian",
+    "hunter",
+    "arcanist",
+    "arcane",
+    "slime",
+    "beast",
+    "dragon",
+    "flame"
+  ];
+
+  const safeType = allowedTypes.includes(type)
+    ? type
+    : "guardian";
+
+  impact.className =
+    `impact-fx impact-fx--${safeType}`;
+
+  impact.setAttribute("aria-hidden", "true");
+
+  target.append(impact);
+
+  window.setTimeout(() => {
+    impact.remove();
+  }, 480);
+}
+
+function shakeArena() {
+  if (!ui.sceneStage) {
+    return;
+  }
+
+  ui.sceneStage.classList.remove("is-shaking");
+
+  void ui.sceneStage.offsetWidth;
+
+  ui.sceneStage.classList.add("is-shaking");
+
+  window.setTimeout(() => {
+    ui.sceneStage.classList.remove("is-shaking");
+  }, 460);
+}
+
+function showFloatingNumber(
+  container,
+  value,
+  healing = false,
+  dodge = false
+) {
+  if (!container) {
+    return;
+  }
+
+  const number = document.createElement("span");
+
+  number.className = "damage-number";
+
+  if (healing) {
+    number.classList.add("damage-number--heal");
+  }
+
+  if (dodge) {
+    number.classList.add("damage-number--dodge");
+  }
+
+  number.textContent = value;
+
+  container.append(number);
+
+  window.setTimeout(() => {
+    number.remove();
+  }, 760);
+}
+
+function waitMs(duration) {
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  return new Promise((resolve) => {
+    window.setTimeout(
+      resolve,
+      reducedMotion ? 0 : duration
+    );
+  });
+}
+
+function showToast(message) {
+  window.clearTimeout(toastTimer);
+
+  ui.toast.textContent = message;
+  ui.toast.classList.add("is-visible");
+
+  toastTimer = window.setTimeout(() => {
+    ui.toast.classList.remove("is-visible");
+  }, 2600);
+}
+
+function randomInt(minimum, maximum) {
+  return (
+    Math.floor(
+      Math.random() * (maximum - minimum + 1)
+    ) + minimum
+  );
+}
+
+function preloadCharacterAssets() {
+  if (typeof Image !== "function") {
+    return;
+  }
+
+  Object.values(CHARACTER_ASSETS).forEach((source) => {
+    const image = new Image();
+    image.src = source;
+  });
+}
+
+function renderCharacterArt(characterId) {
+  const source =
+    CHARACTER_ASSETS[characterId] ||
+    CHARACTER_ASSETS.guardian;
+
+  return (
+    `<img ` +
+    `class="character-art character-art--${characterId}" ` +
+    `src="${source}" ` +
+    `alt="" ` +
+    `draggable="false" ` +
+    `decoding="async" ` +
+    `/>`
+  );
+}
+
+function renderHeroArt(hero) {
+  return renderCharacterArt(
+    normalizeHero(hero).classId
+  );
+}
+
+function renderMerchantArt() {
+  return renderCharacterArt("merchant");
+}
+
+function renderEnemyArt(monsterId) {
+  return renderCharacterArt(
+    MONSTERS[monsterId]
+      ? monsterId
+      : "slime"
+  );
+}
