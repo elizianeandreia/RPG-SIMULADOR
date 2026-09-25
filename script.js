@@ -22,7 +22,6 @@ const CLASS_DATA = {
     defense: 0.14,
     criticalChance: 0.08,
     dodgeChance: 0.54,
-
     skill: {
       name: "Impacto do Bastião",
       description: "Dano forte e 45% de proteção neste turno",
@@ -30,7 +29,6 @@ const CLASS_DATA = {
       cooldown: 3,
       protection: 0.45,
     },
-
     weapons: [
       "Espada curta",
       "Espada reforçada",
@@ -48,7 +46,6 @@ const CLASS_DATA = {
     defense: 0.05,
     criticalChance: 0.22,
     dodgeChance: 0.7,
-
     skill: {
       name: "Rajada Precisa",
       description: "Disparo certeiro com alta chance de crítico",
@@ -56,7 +53,6 @@ const CLASS_DATA = {
       cooldown: 3,
       protection: 0,
     },
-
     weapons: [
       "Arco curto",
       "Arco composto",
@@ -74,7 +70,6 @@ const CLASS_DATA = {
     defense: 0.04,
     criticalChance: 0.12,
     dodgeChance: 0.58,
-
     skill: {
       name: "Chama Vital",
       description: "Ataque arcano que também recupera 10 de vida",
@@ -83,7 +78,6 @@ const CLASS_DATA = {
       protection: 0,
       healing: 10,
     },
-
     weapons: [
       "Cajado de freixo",
       "Cajado de cristal",
@@ -352,26 +346,30 @@ function updateCreatorPreview() {
   const heroName =
     ui.heroNameInput.value.trim() || "Seu herói";
 
-  const heroClass = CLASS_DATA[creatorConfig.classId];
+  const heroClass =
+    CLASS_DATA[creatorConfig.classId];
 
   ui.creatorAvatar.innerHTML =
     renderHeroArt(creatorConfig);
 
-  ui.previewName.textContent = heroName;
+  ui.previewName.textContent =
+    heroName;
 
   ui.previewClass.textContent =
     `${heroClass.label} • ${heroClass.tagline}`;
 }
 
 function startAdventure() {
-  const name = ui.heroNameInput.value.trim();
+  const name =
+    ui.heroNameInput.value.trim();
 
   const hero = {
     name,
     ...creatorConfig,
   };
 
-  state = createNewState(hero);
+  state =
+    createNewState(hero);
 
   state.message =
     `${name}, os portões de Valdora estão fechados. ` +
@@ -387,13 +385,15 @@ function startAdventure() {
 }
 
 function createNewState(hero) {
-  const safeHero = normalizeHero(hero);
+  const safeHero =
+    normalizeHero(hero);
 
   return {
     version: 2,
     hero: safeHero,
     xp: 0,
-    health: CLASS_DATA[safeHero.classId].maxHealth,
+    health:
+      CLASS_DATA[safeHero.classId].maxHealth,
     gold: 35,
     weaponTier: 0,
     location: "city",
@@ -414,9 +414,10 @@ function createNewState(hero) {
 }
 
 function normalizeHero(hero = {}) {
-  const classId = CLASS_DATA[hero.classId]
-    ? hero.classId
-    : "guardian";
+  const classId =
+    CLASS_DATA[hero.classId]
+      ? hero.classId
+      : "guardian";
 
   const rawName =
     typeof hero.name === "string"
@@ -424,7 +425,8 @@ function normalizeHero(hero = {}) {
       : "Aventureiro";
 
   return {
-    name: rawName || "Aventureiro",
+    name:
+      rawName || "Aventureiro",
     classId,
   };
 }
@@ -442,7 +444,9 @@ function showGame() {
 function showCreator() {
   ui.gameScreen.hidden = true;
   ui.creatorScreen.hidden = false;
-  ui.continueButton.hidden = !loadSavedGame();
+
+  ui.continueButton.hidden =
+    !loadSavedGame();
 
   window.scrollTo({
     top: 0,
@@ -451,10 +455,14 @@ function showCreator() {
 }
 
 function createAnotherHero() {
-  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(
+    STORAGE_KEY,
+  );
 
   state = null;
-  ui.continueButton.hidden = true;
+
+  ui.continueButton.hidden =
+    true;
 
   showCreator();
 }
@@ -478,12 +486,15 @@ function saveGame() {
     ui.autosaveStatus.textContent =
       "Progresso salvo agora";
 
-    window.clearTimeout(saveStatusTimer);
+    window.clearTimeout(
+      saveStatusTimer,
+    );
 
-    saveStatusTimer = window.setTimeout(() => {
-      ui.autosaveStatus.textContent =
-        "Progresso salvo automaticamente";
-    }, 1800);
+    saveStatusTimer =
+      window.setTimeout(() => {
+        ui.autosaveStatus.textContent =
+          "Progresso salvo automaticamente";
+      }, 1800);
   } catch (error) {
     ui.autosaveStatus.textContent =
       "Não foi possível salvar neste navegador";
@@ -492,13 +503,17 @@ function saveGame() {
 
 function loadSavedGame() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw =
+      localStorage.getItem(
+        STORAGE_KEY,
+      );
 
     if (!raw) {
       return null;
     }
 
-    const parsed = JSON.parse(raw);
+    const parsed =
+      JSON.parse(raw);
 
     if (
       !parsed ||
@@ -508,7 +523,10 @@ function loadSavedGame() {
       return null;
     }
 
-    const hero = normalizeHero(parsed.hero);
+    const hero =
+      normalizeHero(
+        parsed.hero,
+      );
 
     const normalized = {
       ...createNewState(hero),
@@ -574,23 +592,33 @@ function loadSavedGame() {
         normalized.location,
       )
     ) {
-      normalized.location = "city";
+      normalized.location =
+        "city";
     }
 
     if (
-      !["playing", "victory", "defeat"].includes(
+      ![
+        "playing",
+        "victory",
+        "defeat",
+      ].includes(
         normalized.phase,
       )
     ) {
-      normalized.phase = "playing";
+      normalized.phase =
+        "playing";
     }
 
     if (
       normalized.battle &&
-      MONSTERS[normalized.battle.monsterId]
+      MONSTERS[
+        normalized.battle.monsterId
+      ]
     ) {
       const monster =
-        MONSTERS[normalized.battle.monsterId];
+        MONSTERS[
+          normalized.battle.monsterId
+        ];
 
       normalized.battle = {
         monsterId:
@@ -603,7 +631,8 @@ function loadSavedGame() {
           monster.health,
         ),
 
-        maxHealth: monster.health,
+        maxHealth:
+          monster.health,
 
         turn: clampNumber(
           normalized.battle.turn,
@@ -612,25 +641,34 @@ function loadSavedGame() {
           0,
         ),
 
-        skillCooldown: clampNumber(
-          normalized.battle.skillCooldown,
-          0,
-          9,
-          0,
-        ),
+        skillCooldown:
+          clampNumber(
+            normalized.battle.skillCooldown,
+            0,
+            9,
+            0,
+          ),
       };
     } else {
-      normalized.battle = null;
+      normalized.battle =
+        null;
 
-      if (normalized.location === "battle") {
-        normalized.location = "city";
+      if (
+        normalized.location ===
+        "battle"
+      ) {
+        normalized.location =
+          "city";
       }
     }
 
-    normalized.health = Math.min(
-      normalized.health,
-      getMaxHealth(normalized),
-    );
+    normalized.health =
+      Math.min(
+        normalized.health,
+        getMaxHealth(
+          normalized,
+        ),
+      );
 
     return normalized;
   } catch (error) {
@@ -644,9 +682,14 @@ function clampNumber(
   maximum,
   fallback,
 ) {
-  const number = Number(value);
+  const number =
+    Number(value);
 
-  if (!Number.isFinite(number)) {
+  if (
+    !Number.isFinite(
+      number,
+    )
+  ) {
     return fallback;
   }
 
@@ -654,7 +697,9 @@ function clampNumber(
     maximum,
     Math.max(
       minimum,
-      Math.round(number),
+      Math.round(
+        number,
+      ),
     ),
   );
 }
@@ -672,21 +717,31 @@ function renderAll() {
 
 function updateStats() {
   const heroClass =
-    CLASS_DATA[state.hero.classId];
+    CLASS_DATA[
+      state.hero.classId
+    ];
 
   const levelInfo =
-    getLevelInfo(state.xp);
+    getLevelInfo(
+      state.xp,
+    );
 
   const maxHealth =
-    getMaxHealth(state);
+    getMaxHealth(
+      state,
+    );
 
-  const healthPercent = Math.max(
-    0,
-    Math.min(
-      100,
-      (state.health / maxHealth) * 100,
-    ),
-  );
+  const healthPercent =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        (
+          state.health /
+          maxHealth
+        ) * 100,
+      ),
+    );
 
   ui.heroNameHud.textContent =
     state.hero.name;
@@ -701,7 +756,10 @@ function updateStats() {
     levelInfo.level;
 
   ui.healthText.textContent =
-    Math.max(0, state.health);
+    Math.max(
+      0,
+      state.health,
+    );
 
   ui.maxHealthText.textContent =
     maxHealth;
@@ -711,12 +769,19 @@ function updateStats() {
 
   ui.healthBar.setAttribute(
     "aria-valuemax",
-    String(maxHealth),
+    String(
+      maxHealth,
+    ),
   );
 
   ui.healthBar.setAttribute(
     "aria-valuenow",
-    String(Math.max(0, state.health)),
+    String(
+      Math.max(
+        0,
+        state.health,
+      ),
+    ),
   );
 
   ui.xpText.textContent =
@@ -727,7 +792,11 @@ function updateStats() {
 
   ui.xpBar.setAttribute(
     "aria-valuenow",
-    String(Math.round(levelInfo.progress)),
+    String(
+      Math.round(
+        levelInfo.progress,
+      ),
+    ),
   );
 
   ui.goldText.textContent =
@@ -745,100 +814,115 @@ function getLevelInfo(xp) {
     index < XP_THRESHOLDS.length;
     index += 1
   ) {
-    if (xp >= XP_THRESHOLDS[index]) {
-      level = index + 1;
+    if (
+      xp >=
+      XP_THRESHOLDS[index]
+    ) {
+      level =
+        index + 1;
     }
   }
 
   const currentThreshold =
-    XP_THRESHOLDS[level - 1] ??
+    XP_THRESHOLDS[
+      level - 1
+    ] ??
     XP_THRESHOLDS.at(-1);
 
   const nextThreshold =
-    XP_THRESHOLDS[level] ??
+    XP_THRESHOLDS[
+      level
+    ] ??
     currentThreshold + 65;
 
   const progress =
-    ((xp - currentThreshold) /
-      (nextThreshold - currentThreshold)) *
-    100;
+    (
+      (
+        xp -
+        currentThreshold
+      ) /
+      (
+        nextThreshold -
+        currentThreshold
+      )
+    ) * 100;
 
   return {
     level,
-    progress: Math.max(
-      0,
-      Math.min(100, progress),
-    ),
+
+    progress:
+      Math.max(
+        0,
+        Math.min(
+          100,
+          progress,
+        ),
+      ),
+
     currentThreshold,
     nextThreshold,
   };
 }
 
-function getMaxHealth(sourceState = state) {
+function getMaxHealth(
+  sourceState = state,
+) {
   const base =
-    CLASS_DATA[sourceState.hero.classId]
-      .maxHealth;
+    CLASS_DATA[
+      sourceState.hero.classId
+    ].maxHealth;
 
   const level =
-    getLevelInfo(sourceState.xp).level;
+    getLevelInfo(
+      sourceState.xp,
+    ).level;
 
-  return base + (level - 1) * 8;
+  return (
+    base +
+    (level - 1) * 8
+  );
 }
 
 function getWeaponName() {
-  return CLASS_DATA[state.hero.classId]
-    .weapons[state.weaponTier];
+  return CLASS_DATA[
+    state.hero.classId
+  ].weapons[
+    state.weaponTier
+  ];
 }
 
 function renderScene() {
-  const heroClass =
-    CLASS_DATA[state.hero.classId];
+  const heroClass = CLASS_DATA[state.hero.classId];
+  const presentation = getScenePresentation();
 
-  const presentation =
-    getScenePresentation();
+  ui.sceneStage.dataset.scene = presentation.sceneKey;
+  ui.locationText.textContent = presentation.location;
+  ui.sceneEyebrow.textContent = presentation.eyebrow;
+  ui.sceneTitle.textContent = presentation.title;
+  ui.storyText.textContent = state.message;
+  ui.questText.textContent = getQuestText();
 
-  ui.sceneStage.dataset.scene =
-    presentation.sceneKey;
-
-  ui.locationText.textContent =
-    presentation.location;
-
-  ui.sceneEyebrow.textContent =
-    presentation.eyebrow;
-
-  ui.sceneTitle.textContent =
-    presentation.title;
-
-  ui.storyText.textContent =
-    state.message;
-
-  ui.questText.textContent =
-    getQuestText();
-
-  ui.heroAvatar.innerHTML =
-    renderHeroArt(state.hero);
-
-  ui.heroStageName.textContent =
-    state.hero.name;
-
-  ui.heroStageRole.textContent =
-    heroClass.label;
+  ui.heroFigure.dataset.classId = state.hero.classId;
+  ui.heroAvatar.innerHTML = renderHeroArt(state.hero);
+  ui.heroStageName.textContent = state.hero.name;
+  ui.heroStageRole.textContent = heroClass.label;
 
   ui.heroFigure.classList.toggle(
     "is-defeated",
-    state.phase === "defeat",
+    state.phase === "defeat"
   );
 
-  ui.partnerFigure.classList.remove(
-    "is-defeated",
-  );
-
-  ui.enemyHud.hidden = true;
+  ui.partnerFigure.classList.remove("is-defeated");
   ui.partnerFigure.hidden = true;
   ui.versusMark.hidden = true;
+  ui.enemyHud.hidden = true;
+
+  delete ui.partnerFigure.dataset.monsterId;
 
   if (presentation.partner) {
     ui.partnerFigure.hidden = false;
+    ui.partnerFigure.dataset.monsterId =
+      presentation.partner.id;
 
     ui.partnerAvatar.innerHTML =
       presentation.partner.art;
@@ -854,9 +938,7 @@ function renderScene() {
 
     ui.partnerFigure.classList.toggle(
       "is-defeated",
-      Boolean(
-        presentation.partner.defeated,
-      ),
+      Boolean(presentation.partner.defeated)
     );
   }
 
@@ -870,72 +952,57 @@ function getScenePresentation() {
       location: "Portão de Valdora",
       eyebrow: "A cidade está livre",
       title: "O cerco terminou",
-
       partner: {
+        id: "dragon",
         name: MONSTERS.dragon.name,
         role: "Derrotado",
         hostile: true,
         defeated: true,
-        art: renderEnemyArt("dragon"),
-      },
+        art: renderEnemyArt("dragon")
+      }
     };
   }
 
   if (state.phase === "defeat") {
-    const monsterId =
-      MONSTERS[state.lastMonsterId]
-        ? state.lastMonsterId
-        : "dragon";
+    const monsterId = MONSTERS[state.lastMonsterId]
+      ? state.lastMonsterId
+      : "dragon";
 
-    const monster =
-      MONSTERS[monsterId];
+    const monster = MONSTERS[monsterId];
 
     return {
       sceneKey: "defeat",
       location: "Ecos da batalha",
-      eyebrow:
-        "A jornada foi interrompida",
+      eyebrow: "A jornada foi interrompida",
       title: "O herói caiu",
-
       partner: {
+        id: monsterId,
         name: monster.name,
         role: monster.role,
         hostile: true,
-        art: renderEnemyArt(monsterId),
-      },
+        art: renderEnemyArt(monsterId)
+      }
     };
   }
 
-  if (
-    state.location === "battle" &&
-    state.battle
-  ) {
-    const monster =
-      MONSTERS[state.battle.monsterId];
+  if (state.location === "battle" && state.battle) {
+    const monsterId = state.battle.monsterId;
+    const monster = MONSTERS[monsterId];
 
     return {
-      sceneKey:
-        `battle-${state.battle.monsterId}`,
-
-      location:
-        state.battle.monsterId === "dragon"
-          ? "Portão do Dragão"
-          : "Cavernas de Valdora",
-
-      eyebrow:
-        `Turno ${state.battle.turn + 1}`,
-
-      title:
-        `Confronto: ${monster.name}`,
-
+      sceneKey: `battle-${monsterId}`,
+      location: monsterId === "dragon"
+        ? "Portão do Dragão"
+        : "Cavernas de Valdora",
+      eyebrow: `Turno ${state.battle.turn + 1}`,
+      title: `Confronto: ${monster.name}`,
       partner: {
+        id: monsterId,
         name: monster.name,
         role: monster.role,
         hostile: true,
-        art: renderEnemyArt(
-          state.battle.monsterId,
-        ),
-      },
+        art: renderEnemyArt(monsterId)
+      }
     };
   }
 
@@ -945,13 +1012,13 @@ function getScenePresentation() {
       location: "Forja do Portão",
       eyebrow: "Armas e provisões",
       title: "Oficina de Maela",
-
       partner: {
+        id: "merchant",
         name: "Maela",
         role: "Mestra ferreira",
         hostile: false,
-        art: renderMerchantArt(),
-      },
+        art: renderMerchantArt()
+      }
     };
   }
 
@@ -961,20 +1028,18 @@ function getScenePresentation() {
       location: "Cavernas de Valdora",
       eyebrow: "Treino e recompensa",
       title: "As galerias profundas",
-      partner: null,
+      partner: null
     };
   }
 
   return {
     sceneKey: "city",
     location: "Praça de Valdora",
-
     eyebrow: isDragonUnlocked()
       ? "O portão está aberto"
       : "Um refúgio entre batalhas",
-
     title: "A cidade sitiada",
-    partner: null,
+    partner: null
   };
 }
 
@@ -988,40 +1053,34 @@ function updateBattleHud() {
     return;
   }
 
-  const monster =
-    MONSTERS[state.battle.monsterId];
+  const monster = MONSTERS[state.battle.monsterId];
 
   const percent = Math.max(
     0,
-    (state.battle.health /
-      state.battle.maxHealth) *
-      100,
+    (state.battle.health / state.battle.maxHealth) * 100
   );
 
   ui.enemyHud.hidden = false;
+  ui.enemyName.textContent = monster.name;
 
-  ui.enemyName.textContent =
-    monster.name;
-
-  ui.enemyHealthText.textContent =
-    Math.max(0, state.battle.health);
+  ui.enemyHealthText.textContent = Math.max(
+    0,
+    state.battle.health
+  );
 
   ui.enemyMaxHealthText.textContent =
     state.battle.maxHealth;
 
-  ui.enemyHealthProgress.style.width =
-    `${percent}%`;
+  ui.enemyHealthProgress.style.width = `${percent}%`;
 
   ui.enemyHealthBar.setAttribute(
     "aria-valuemax",
-    String(state.battle.maxHealth),
+    String(state.battle.maxHealth)
   );
 
   ui.enemyHealthBar.setAttribute(
     "aria-valuenow",
-    String(
-      Math.max(0, state.battle.health),
-    ),
+    String(Math.max(0, state.battle.health))
   );
 }
 
@@ -1034,17 +1093,13 @@ function getQuestText() {
     return "Erga-se e tente novamente";
   }
 
-  const { level } =
-    getLevelInfo(state.xp);
+  const { level } = getLevelInfo(state.xp);
 
   if (isDragonUnlocked()) {
     return "Enfrente Vharok no portão";
   }
 
-  if (
-    level < 4 &&
-    state.weaponTier < 2
-  ) {
+  if (level < 4 && state.weaponTier < 2) {
     return (
       `Prepare-se: nível ${level}/4 • ` +
       `arma ${state.weaponTier}/2`
@@ -1052,9 +1107,7 @@ function getQuestText() {
   }
 
   if (level < 4) {
-    return (
-      `Alcance o nível 4 • atual ${level}`
-    );
+    return `Alcance o nível 4 • atual ${level}`;
   }
 
   return (
@@ -1064,8 +1117,7 @@ function getQuestText() {
 }
 
 function updateJourneyDetails() {
-  const { level } =
-    getLevelInfo(state.xp);
+  const { level } = getLevelInfo(state.xp);
 
   if (state.phase === "victory") {
     ui.progressText.textContent =
@@ -1087,53 +1139,35 @@ function updateJourneyDetails() {
 }
 
 function renderActions() {
-  const actions =
-    getAvailableActions();
+  const actions = getAvailableActions();
 
   ui.actionGrid.replaceChildren();
 
   actions.forEach((action, index) => {
-    const button =
-      document.createElement("button");
+    const button = document.createElement("button");
 
     button.type = "button";
 
     button.className =
       `action-button action-button--${action.tone || "quiet"}`;
 
-    button.dataset.key =
-      String(index + 1);
+    button.dataset.key = String(index + 1);
 
-    button.disabled =
-      Boolean(
-        action.disabled ||
-        state.busy,
-      );
+    button.disabled = Boolean(
+      action.disabled || state.busy
+    );
 
-    const label =
-      document.createElement("span");
+    const label = document.createElement("span");
+    label.className = "action-label";
+    label.textContent = action.label;
 
-    label.className =
-      "action-label";
-
-    label.textContent =
-      action.label;
-
-    const hint =
-      document.createElement("span");
-
-    hint.className =
-      "action-hint";
-
-    hint.textContent =
-      action.hint;
+    const hint = document.createElement("span");
+    hint.className = "action-hint";
+    hint.textContent = action.hint;
 
     button.append(label, hint);
 
-    button.addEventListener(
-      "click",
-      action.action,
-    );
+    button.addEventListener("click", action.action);
 
     ui.actionGrid.append(button);
   });
@@ -1144,19 +1178,16 @@ function getAvailableActions() {
     return [
       {
         label: "Nova aventura",
-        hint:
-          "Recomeçar com o mesmo herói",
+        hint: "Recomeçar com o mesmo herói",
         tone: "gold",
-        action: restartWithSameHero,
+        action: restartWithSameHero
       },
-
       {
         label: "Criar outro herói",
-        hint:
-          "Voltar ao criador de personagem",
+        hint: "Voltar ao criador de personagem",
         tone: "quiet",
-        action: createAnotherHero,
-      },
+        action: createAnotherHero
+      }
     ];
   }
 
@@ -1164,146 +1195,101 @@ function getAvailableActions() {
     return [
       {
         label: "Tentar novamente",
-        hint:
-          "Reiniciar a jornada com este herói",
+        hint: "Reiniciar a jornada com este herói",
         tone: "gold",
-        action: restartWithSameHero,
+        action: restartWithSameHero
       },
-
       {
         label: "Criar outro herói",
-        hint:
-          "Escolher outra classe",
+        hint: "Escolher outra classe",
         tone: "quiet",
-        action: createAnotherHero,
-      },
+        action: createAnotherHero
+      }
     ];
   }
 
-  if (
-    state.location === "battle" &&
-    state.battle
-  ) {
-    const heroClass =
-      CLASS_DATA[state.hero.classId];
-
-    const cooldown =
-      state.battle.skillCooldown;
+  if (state.location === "battle" && state.battle) {
+    const heroClass = CLASS_DATA[state.hero.classId];
+    const cooldown = state.battle.skillCooldown;
 
     return [
       {
         label: "Atacar",
-
-        hint:
-          `Golpe com ${getWeaponName().toLowerCase()}`,
-
+        hint: `Golpe com ${getWeaponName().toLowerCase()}`,
         tone: "primary",
-
-        action: () =>
-          performPlayerAttack("attack"),
+        action: () => performPlayerAttack("attack")
       },
-
       {
-        label:
-          cooldown > 0
-            ? `${heroClass.skill.name} (${cooldown})`
-            : heroClass.skill.name,
-
-        hint:
-          cooldown > 0
-            ? `Disponível em ${cooldown} turno(s)`
-            : heroClass.skill.description,
-
+        label: cooldown > 0
+          ? `${heroClass.skill.name} (${cooldown})`
+          : heroClass.skill.name,
+        hint: cooldown > 0
+          ? `Disponível em ${cooldown} turno(s)`
+          : heroClass.skill.description,
         tone: "gold",
         disabled: cooldown > 0,
-
-        action: () =>
-          performPlayerAttack("skill"),
+        action: () => performPlayerAttack("skill")
       },
-
       {
         label: "Esquivar",
-
         hint:
-          `${Math.round(
-            heroClass.dodgeChance * 100,
-          )}% de chance de evitar o golpe`,
-
+          `${Math.round(heroClass.dodgeChance * 100)}% ` +
+          "de chance de evitar o golpe",
         tone: "quiet",
-        action: performDodge,
+        action: performDodge
       },
-
       {
         label: "Recuar",
-        hint:
-          "Sair da batalha sem receber recompensa",
+        hint: "Sair da batalha sem receber recompensa",
         tone: "danger",
-        action: fleeBattle,
-      },
+        action: fleeBattle
+      }
     ];
   }
 
   if (state.location === "shop") {
-    const nextTier =
-      state.weaponTier + 1;
+    const nextTier = state.weaponTier + 1;
 
     const hasUpgrade =
       nextTier < WEAPON_TIERS.length;
 
-    const upgradeCost =
-      hasUpgrade
-        ? WEAPON_TIERS[nextTier].cost
-        : 0;
+    const upgradeCost = hasUpgrade
+      ? WEAPON_TIERS[nextTier].cost
+      : 0;
 
     return [
       {
         label: "Comprar curativo",
-
-        hint:
-          state.health >= getMaxHealth(state)
-            ? "A vida já está completa"
-            : "Recupera 35 de vida • 15 ouro",
-
+        hint: state.health >= getMaxHealth(state)
+          ? "A vida já está completa"
+          : "Recupera 35 de vida • 15 ouro",
         tone: "primary",
-
         disabled:
           state.gold < 15 ||
-          state.health >=
-            getMaxHealth(state),
-
-        action: buyHealing,
+          state.health >= getMaxHealth(state),
+        action: buyHealing
       },
-
       {
         label: hasUpgrade
           ? `Melhorar: ${
-              CLASS_DATA[state.hero.classId]
-                .weapons[nextTier]
+              CLASS_DATA[state.hero.classId].weapons[nextTier]
             }`
           : "Equipamento máximo",
-
         hint: hasUpgrade
           ? `${upgradeCost} ouro • aumenta o dano`
           : "A forja não possui melhoria superior",
-
         tone: "gold",
-
         disabled:
           !hasUpgrade ||
           state.gold < upgradeCost,
-
-        action: upgradeWeapon,
+        action: upgradeWeapon
       },
-
       {
         label: "Voltar à praça",
-        hint:
-          "Retornar ao centro de Valdora",
+        hint: "Retornar ao centro de Valdora",
         tone: "quiet",
-
-        action: () =>
-          travelTo("city"),
-      },
+        action: () => travelTo("city")
+      }
     ];
   }
 
@@ -1311,90 +1297,173 @@ function getAvailableActions() {
     return [
       {
         label: "Enfrentar lodo",
-
-        hint:
-          "Risco baixo • 10 XP • 15 ouro",
-
+        hint: "Risco baixo • 10 XP • 15 ouro",
         tone: "primary",
-
-        action: () =>
-          startBattle("slime"),
+        action: () => startBattle("slime")
       },
-
       {
         label: "Caçar a besta",
-
-        hint:
-          "Risco médio • 18 XP • 30 ouro",
-
+        hint: "Risco médio • 18 XP • 30 ouro",
         tone: "danger",
-
-        action: () =>
-          startBattle("beast"),
+        action: () => startBattle("beast")
       },
-
       {
         label: "Voltar à praça",
-        hint:
-          "Retornar ao centro de Valdora",
+        hint: "Retornar ao centro de Valdora",
         tone: "quiet",
-
-        action: () =>
-          travelTo("city"),
-      },
+        action: () => travelTo("city")
+      }
     ];
   }
 
-  const unlocked =
-    isDragonUnlocked();
+  const unlocked = isDragonUnlocked();
 
   return [
     {
       label: "Visitar a forja",
-
-      hint:
-        "Curativos e melhorias de equipamento",
-
+      hint: "Curativos e melhorias de equipamento",
       tone: "gold",
-
-      action: () =>
-        travelTo("shop"),
+      action: () => travelTo("shop")
     },
-
     {
       label: "Explorar as cavernas",
-
-      hint:
-        "Treine, conquiste XP e encontre ouro",
-
+      hint: "Treine, conquiste XP e encontre ouro",
       tone: "primary",
-
-      action: () =>
-        travelTo("cave"),
+      action: () => travelTo("cave")
     },
-
     {
       label: unlocked
         ? "Enfrentar Vharok"
         : "Portão do Dragão bloqueado",
-
       hint: unlocked
         ? "Batalha final • risco extremo"
         : "Requer nível 4 e equipamento nível 2",
-
       tone: "danger",
       disabled: !unlocked,
-
-      action: () =>
-        startBattle("dragon"),
-    },
+      action: () => startBattle("dragon")
+    }
   ];
 }
 
-function travelTo(location) {
+function runFigureMotion(element, keyframes, options = {}) {
+  if (
+    !element ||
+    typeof element.animate !== "function"
+  ) {
+    return Promise.resolve();
+  }
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (reducedMotion) {
+    return Promise.resolve();
+  }
+
+  const animation = element.animate(keyframes, {
+    duration: 650,
+    easing: "ease-in-out",
+    fill: "none",
+    ...options
+  });
+
+  return animation.finished.catch(() => {});
+}
+
+function playSceneEntrance() {
+  const animations = [
+    runFigureMotion(
+      ui.heroFigure,
+      [
+        {
+          transform: "translateX(-125px)",
+          opacity: 0
+        },
+        {
+          transform: "translateX(0)",
+          opacity: 1
+        }
+      ],
+      {
+        duration: 700,
+        easing: "ease-out"
+      }
+    )
+  ];
+
+  if (!ui.partnerFigure.hidden) {
+    animations.push(
+      runFigureMotion(
+        ui.partnerFigure,
+        [
+          {
+            transform: "translateX(125px)",
+            opacity: 0
+          },
+          {
+            transform: "translateX(0)",
+            opacity: 1
+          }
+        ],
+        {
+          duration: 700,
+          easing: "ease-out"
+        }
+      )
+    );
+  }
+
+  return Promise.all(animations);
+}
+
+async function travelTo(location) {
+  if (
+    !state ||
+    state.busy ||
+    !["city", "shop", "cave"].includes(location)
+  ) {
+    return;
+  }
+
+  if (state.location === location) {
+    return;
+  }
+
+  const currentGame = state;
+
+  state.busy = true;
+  renderActions();
+
+  const distance = Math.min(
+    480,
+    ui.sceneStage.clientWidth * 0.65
+  );
+
+  await runFigureMotion(
+    ui.heroFigure,
+    [
+      {
+        transform: "translateX(0)",
+        opacity: 1
+      },
+      {
+        transform: `translateX(${distance}px)`,
+        opacity: 0
+      }
+    ],
+    {
+      duration: 720,
+      easing: "ease-in"
+    }
+  );
+
+  if (state !== currentGame) {
+    return;
+  }
+
   state.location = location;
   state.battle = null;
-  state.busy = false;
 
   if (location === "city") {
     state.message = isDragonUnlocked()
@@ -1410,11 +1479,24 @@ function travelTo(location) {
 
   renderAll();
   saveGame();
+
+  await playSceneEntrance();
+
+  if (state !== currentGame) {
+    return;
+  }
+
+  state.busy = false;
+  renderActions();
+  saveGame();
 }
 
 function buyHealing() {
-  const maxHealth =
-    getMaxHealth(state);
+  if (!state || state.busy) {
+    return;
+  }
+
+  const maxHealth = getMaxHealth(state);
 
   if (
     state.gold < 15 ||
@@ -1425,36 +1507,40 @@ function buyHealing() {
 
   const recovered = Math.min(
     35,
-    maxHealth - state.health,
+    maxHealth - state.health
   );
 
   state.gold -= 15;
   state.health += recovered;
 
   state.message =
-    `Maela aplica um curativo reforçado. ` +
+    "Maela aplica um curativo reforçado. " +
     `Você recupera ${recovered} pontos de vida.`;
 
   renderAll();
   saveGame();
 
-  showToast(
-    `+${recovered} de vida`,
+  showFloatingNumber(
+    ui.heroFigure,
+    `+${recovered}`,
+    true
   );
+
+  showToast(`+${recovered} de vida`);
 }
 
 function upgradeWeapon() {
-  const nextTier =
-    state.weaponTier + 1;
-
-  if (
-    nextTier >= WEAPON_TIERS.length
-  ) {
+  if (!state || state.busy) {
     return;
   }
 
-  const cost =
-    WEAPON_TIERS[nextTier].cost;
+  const nextTier = state.weaponTier + 1;
+
+  if (nextTier >= WEAPON_TIERS.length) {
+    return;
+  }
+
+  const cost = WEAPON_TIERS[nextTier].cost;
 
   if (state.gold < cost) {
     return;
@@ -1468,8 +1554,7 @@ function upgradeWeapon() {
     `${getWeaponName().toLowerCase()}. ` +
     "Seu dano aumentou.";
 
-  const unlockedNow =
-    isDragonUnlocked();
+  const unlockedNow = isDragonUnlocked();
 
   renderAll();
   saveGame();
@@ -1477,12 +1562,16 @@ function upgradeWeapon() {
   showToast(
     unlockedNow
       ? "O Portão do Dragão foi liberado!"
-      : "Equipamento melhorado",
+      : "Equipamento melhorado"
   );
 }
 
-function startBattle(monsterId) {
-  if (!MONSTERS[monsterId]) {
+async function startBattle(monsterId) {
+  if (
+    !state ||
+    state.busy ||
+    !MONSTERS[monsterId]
+  ) {
     return;
   }
 
@@ -1491,14 +1580,13 @@ function startBattle(monsterId) {
     !isDragonUnlocked()
   ) {
     showToast(
-      "Alcance o nível 4 e melhore o equipamento até o nível 2.",
+      "Alcance o nível 4 e melhore o equipamento até o nível 2."
     );
-
     return;
   }
 
-  const monster =
-    MONSTERS[monsterId];
+  const monster = MONSTERS[monsterId];
+  const currentGame = state;
 
   state.location = "battle";
 
@@ -1507,309 +1595,24 @@ function startBattle(monsterId) {
     health: monster.health,
     maxHealth: monster.health,
     turn: 0,
-    skillCooldown: 0,
+    skillCooldown: 0
   };
+
+  const currentBattle = state.battle;
 
   state.lastMonsterId = monsterId;
   state.message = monster.intro;
-  state.busy = false;
-
-  renderAll();
-  saveGame();
-}
-
-function performPlayerAttack(mode) {
-  if (
-    state.busy ||
-    !state.battle
-  ) {
-    return;
-  }
-
-  const heroClass =
-    CLASS_DATA[state.hero.classId];
-
-  if (
-    mode === "skill" &&
-    state.battle.skillCooldown > 0
-  ) {
-    return;
-  }
-
   state.busy = true;
 
-  renderActions();
-
-  const multiplier =
-    mode === "skill"
-      ? heroClass.skill.multiplier
-      : 1;
-
-  const attack =
-    calculatePlayerDamage(
-      multiplier,
-      mode === "skill",
-    );
-
-  state.battle.health = Math.max(
-    0,
-    state.battle.health -
-      attack.damage,
-  );
-
-  let actionSummary =
-    `${state.hero.name} causa ` +
-    `${attack.damage} de dano`;
-
-  if (mode === "skill") {
-    actionSummary =
-      `${state.hero.name} usa ` +
-      `${heroClass.skill.name} e causa ` +
-      `${attack.damage} de dano`;
-
-    state.battle.skillCooldown =
-      heroClass.skill.cooldown;
-  }
-
-  if (attack.critical) {
-    actionSummary +=
-      " com um acerto crítico";
-  }
-
-  actionSummary += ".";
-
-  if (
-    mode === "skill" &&
-    heroClass.skill.healing
-  ) {
-    const maxHealth =
-      getMaxHealth(state);
-
-    const recovered = Math.min(
-      heroClass.skill.healing,
-      maxHealth - state.health,
-    );
-
-    if (recovered > 0) {
-      state.health += recovered;
-
-      actionSummary +=
-        ` A chama devolve ${recovered} de vida.`;
-
-      showFloatingNumber(
-        ui.heroFigure,
-        `+${recovered}`,
-        true,
-      );
-    }
-  }
-
-  state.message = actionSummary;
-
-  updateStats();
-  updateBattleHud();
-
-  ui.storyText.textContent =
-    state.message;
-
-  animateStrike(
-    ui.heroFigure,
-    ui.partnerFigure,
-    attack.damage,
-  );
-
+  renderAll();
   saveGame();
 
-  if (state.battle.health <= 0) {
-    window.setTimeout(
-      resolveBattleVictory,
-      430,
-    );
-
-    return;
-  }
-
-  window.setTimeout(() => {
-    enemyTurn({
-      actionSummary,
-      usedSkill: mode === "skill",
-
-      protection:
-        mode === "skill"
-          ? heroClass.skill.protection || 0
-          : 0,
-
-      dodge: false,
-    });
-  }, 450);
-}
-
-function calculatePlayerDamage(
-  multiplier,
-  forceCriticalBoost,
-) {
-  const heroClass =
-    CLASS_DATA[state.hero.classId];
-
-  const level =
-    getLevelInfo(state.xp).level;
-
-  const weaponPower =
-    WEAPON_TIERS[state.weaponTier]
-      .power;
-
-  const baseDamage =
-    weaponPower +
-    heroClass.attackBonus +
-    level * 2 +
-    randomInt(0, 4);
-
-  const criticalChance =
-    forceCriticalBoost &&
-    state.hero.classId === "hunter"
-      ? Math.min(
-          0.55,
-          heroClass.criticalChance + 0.2,
-        )
-      : heroClass.criticalChance;
-
-  const critical =
-    Math.random() < criticalChance;
-
-  const criticalMultiplier =
-    critical ? 1.45 : 1;
-
-  return {
-    damage: Math.max(
-      1,
-      Math.round(
-        baseDamage *
-          multiplier *
-          criticalMultiplier,
-      ),
-    ),
-
-    critical,
-  };
-}
-
-function performDodge() {
-  if (
-    state.busy ||
-    !state.battle
-  ) {
-    return;
-  }
-
-  state.busy = true;
-
-  state.message =
-    `${state.hero.name} observa o movimento ` +
-    "do inimigo e prepara a esquiva.";
-
-  ui.storyText.textContent =
-    state.message;
-
-  renderActions();
-  saveGame();
-
-  window.setTimeout(() => {
-    enemyTurn({
-      actionSummary:
-        `${state.hero.name} tenta antecipar ` +
-        "o próximo golpe.",
-
-      usedSkill: false,
-      protection: 0,
-      dodge: true,
-    });
-  }, 260);
-}
-
-function enemyTurn(context) {
-  if (!state.battle) {
-    return;
-  }
-
-  const monster =
-    MONSTERS[state.battle.monsterId];
-
-  const heroClass =
-    CLASS_DATA[state.hero.classId];
-
-  const dodged =
-    context.dodge &&
-    Math.random() <
-      heroClass.dodgeChance;
-
-  let damage = 0;
-
-  if (!dodged) {
-    const rawDamage = randomInt(
-      monster.minDamage,
-      monster.maxDamage,
-    );
-
-    const reduction = Math.min(
-      0.75,
-      heroClass.defense +
-        context.protection,
-    );
-
-    damage = Math.max(
-      1,
-      Math.round(
-        rawDamage * (1 - reduction),
-      ),
-    );
-
-    state.health = Math.max(
-      0,
-      state.health - damage,
-    );
-
-    animateStrike(
-      ui.partnerFigure,
-      ui.heroFigure,
-      damage,
-    );
-  }
+  await playSceneEntrance();
 
   if (
-    !context.usedSkill &&
-    state.battle.skillCooldown > 0
+    state !== currentGame ||
+    state.battle !== currentBattle
   ) {
-    state.battle.skillCooldown -= 1;
-  }
-
-  state.battle.turn += 1;
-
-  if (dodged) {
-    state.message =
-      `${context.actionSummary} ` +
-      `A esquiva funciona: ${monster.name} ` +
-      "erra o ataque.";
-  } else {
-    state.message =
-      `${context.actionSummary} ` +
-      `${monster.name} responde e causa ` +
-      `${damage} de dano.`;
-  }
-
-  updateStats();
-  updateBattleHud();
-
-  ui.storyText.textContent =
-    state.message;
-
-  if (state.health <= 0) {
-    saveGame();
-
-    window.setTimeout(
-      resolveDefeat,
-      420,
-    );
-
     return;
   }
 
@@ -1817,311 +1620,4 @@ function enemyTurn(context) {
 
   renderActions();
   saveGame();
-}
-
-function fleeBattle() {
-  if (
-    state.busy ||
-    !state.battle
-  ) {
-    return;
-  }
-
-  const monsterId =
-    state.battle.monsterId;
-
-  const monsterName =
-    MONSTERS[monsterId].name;
-
-  state.battle = null;
-
-  state.location =
-    monsterId === "dragon"
-      ? "city"
-      : "cave";
-
-  state.busy = false;
-
-  state.message =
-    `${state.hero.name} recua diante de ` +
-    `${monsterName}. A batalha termina sem ` +
-    "recompensas, mas a vida atual é preservada.";
-
-  renderAll();
-  saveGame();
-}
-
-function resolveBattleVictory() {
-  if (!state.battle) {
-    return;
-  }
-
-  const monsterId =
-    state.battle.monsterId;
-
-  const monster =
-    MONSTERS[monsterId];
-
-  const previousLevel =
-    getLevelInfo(state.xp).level;
-
-  const wasUnlocked =
-    isDragonUnlocked();
-
-  state.xp += monster.xp;
-  state.gold += monster.gold;
-  state.lastMonsterId = monsterId;
-  state.battle = null;
-  state.busy = false;
-
-  if (monsterId === "dragon") {
-    state.phase = "victory";
-
-    state.message =
-      `${state.hero.name} derrota Vharok. ` +
-      "As asas do dragão silenciam e os " +
-      "portões de Valdora voltam a se abrir.";
-
-    renderAll();
-    saveGame();
-
-    showToast(
-      "Vitória! Valdora está livre.",
-    );
-
-    return;
-  }
-
-  state.defeated[monsterId] += 1;
-  state.location = "cave";
-
-  const newLevel =
-    getLevelInfo(state.xp).level;
-
-  let levelMessage = "";
-
-  if (newLevel > previousLevel) {
-    const recovered = Math.min(
-      getMaxHealth(state) -
-        state.health,
-
-      18 *
-        (newLevel - previousLevel),
-    );
-
-    state.health +=
-      Math.max(0, recovered);
-
-    levelMessage =
-      ` Você alcançou o nível ${newLevel} ` +
-      `e recuperou ${Math.max(
-        0,
-        recovered,
-      )} de vida.`;
-  }
-
-  state.message =
-    `${monster.name} foi derrotado. ` +
-    `Recompensa: ${monster.xp} XP e ` +
-    `${monster.gold} de ouro.` +
-    levelMessage;
-
-  const unlockedNow =
-    !wasUnlocked &&
-    isDragonUnlocked();
-
-  renderAll();
-  saveGame();
-
-  showToast(
-    unlockedNow
-      ? "O Portão do Dragão foi liberado!"
-      : `+${monster.xp} XP • +${monster.gold} ouro`,
-  );
-}
-
-function resolveDefeat() {
-  if (state.phase !== "playing") {
-    return;
-  }
-
-  const monster =
-    MONSTERS[state.lastMonsterId] ||
-    MONSTERS.dragon;
-
-  state.phase = "defeat";
-  state.battle = null;
-  state.busy = false;
-
-  state.message =
-    `${state.hero.name} cai diante de ` +
-    `${monster.name}. A experiência da jornada ` +
-    "permanece como aprendizado — você pode " +
-    "tentar novamente.";
-
-  renderAll();
-  saveGame();
-}
-
-function restartWithSameHero() {
-  const hero = {
-    ...state.hero,
-  };
-
-  state = createNewState(hero);
-
-  state.message =
-    `${hero.name} retorna à praça com uma ` +
-    "nova estratégia. A jornada recomeça.";
-
-  renderAll();
-  saveGame();
-}
-
-function isDragonUnlocked() {
-  if (!state) {
-    return false;
-  }
-
-  return (
-    getLevelInfo(state.xp).level >= 4 &&
-    state.weaponTier >= 2
-  );
-}
-
-function animateStrike(
-  attacker,
-  target,
-  damage,
-) {
-  attacker.classList.remove(
-    "is-attacking",
-  );
-
-  target.classList.remove(
-    "is-hit",
-  );
-
-  void attacker.offsetWidth;
-
-  attacker.classList.add(
-    "is-attacking",
-  );
-
-  target.classList.add(
-    "is-hit",
-  );
-
-  showFloatingNumber(
-    target,
-    `-${damage}`,
-    false,
-  );
-
-  window.setTimeout(() => {
-    attacker.classList.remove(
-      "is-attacking",
-    );
-
-    target.classList.remove(
-      "is-hit",
-    );
-  }, 430);
-}
-
-function showFloatingNumber(
-  container,
-  value,
-  healing,
-) {
-  const number =
-    document.createElement("span");
-
-  number.className = healing
-    ? "damage-number damage-number--heal"
-    : "damage-number";
-
-  number.textContent = value;
-
-  container.append(number);
-
-  window.setTimeout(() => {
-    number.remove();
-  }, 720);
-}
-
-function showToast(message) {
-  window.clearTimeout(toastTimer);
-
-  ui.toast.textContent = message;
-
-  ui.toast.classList.add(
-    "is-visible",
-  );
-
-  toastTimer = window.setTimeout(() => {
-    ui.toast.classList.remove(
-      "is-visible",
-    );
-  }, 2600);
-}
-
-function randomInt(
-  minimum,
-  maximum,
-) {
-  return Math.floor(
-    Math.random() *
-      (maximum - minimum + 1),
-  ) + minimum;
-}
-
-function preloadCharacterAssets() {
-  if (typeof Image !== "function") {
-    return;
-  }
-
-  Object.values(
-    CHARACTER_ASSETS,
-  ).forEach((source) => {
-    const image = new Image();
-
-    image.src = source;
-  });
-}
-
-function renderCharacterArt(characterId) {
-  const source =
-    CHARACTER_ASSETS[characterId] ||
-    CHARACTER_ASSETS.guardian;
-
-  return (
-    `<img ` +
-    `class="character-art character-art--${characterId}" ` +
-    `src="${source}" ` +
-    `alt="" ` +
-    `draggable="false" ` +
-    `decoding="async" ` +
-    `/>`
-  );
-}
-
-function renderHeroArt(hero) {
-  return renderCharacterArt(
-    normalizeHero(hero).classId,
-  );
-}
-
-function renderMerchantArt() {
-  return renderCharacterArt(
-    "merchant",
-  );
-}
-
-function renderEnemyArt(monsterId) {
-  return renderCharacterArt(
-    MONSTERS[monsterId]
-      ? monsterId
-      : "slime",
-  );
 }
