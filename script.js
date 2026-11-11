@@ -344,7 +344,7 @@ function updateSoundButtons() {
     if (!button) return;
     button.textContent = AudioFX.enabled ? "🔊" : "🔇";
     button.setAttribute("aria-pressed", String(AudioFX.enabled));
-    button.title = AudioFX.enabled ? "Som ligado — clique para silenciar" : "Som desligado — clique para ativar";
+    button.title = AudioFX.enabled ? "Som ligado — clique para silenciar" : "Som desligado - clique para ativar";
   });
 }
 
