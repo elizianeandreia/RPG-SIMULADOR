@@ -1,464 +1,259 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Crônicas de Valdora, um RPG de navegador com criação de personagem, exploração, progressão e combate contra o dragão."
-    />
-    <title>Crônicas de Valdora | RPG de navegador</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crônicas de Valdora | RPG de navegador</title>
+  <meta name="description" content="Crie seu herói, explore Valdora andando e pulando, enfrente criaturas e liberte a cidade do dragão Vharok.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div class="ambient ambient--one" aria-hidden="true"></div>
+  <div class="ambient ambient--two" aria-hidden="true"></div>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./estilo.css" />
-  </head>
-
-  <body>
-    <div class="ambient ambient--one" aria-hidden="true"></div>
-    <div class="ambient ambient--two" aria-hidden="true"></div>
-
-    <main class="app-shell">
-      <section
-        id="creatorScreen"
-        class="screen creator-screen"
-        aria-labelledby="gameTitle"
-      >
-        <div class="creator-intro">
-          <p class="eyebrow">RPG de aventura</p>
-
-          <h1 id="gameTitle">
-            Crônicas de
-            <span>Valdora</span>
-          </h1>
-
-          <p class="creator-lead">
-            O dragão fechou os portões da cidade. Escolha seu herói,
-            fortaleça-se nas cavernas e encerre o cerco.
-          </p>
-
-          <div class="creator-preview" aria-label="Prévia do personagem">
-            <div class="sigil sigil--left" aria-hidden="true"></div>
-
-            <div
-              id="creatorAvatar"
-              class="avatar avatar--preview"
-              aria-hidden="true"
-            ></div>
-
-            <div class="preview-copy">
-              <strong id="previewName">Seu herói</strong>
-              <span id="previewClass">Guardião • resistente</span>
-            </div>
-          </div>
-
-          <ul class="feature-list" aria-label="Recursos da aventura">
-            <li><span>01</span> Escolha de herói</li>
-            <li><span>02</span> Combate tático por turnos</li>
-            <li><span>03</span> Progresso salvo no navegador</li>
-          </ul>
-        </div>
-
-        <form id="characterForm" class="creator-form">
-          <div class="form-heading">
-            <div>
-              <p class="step-label">Antes da jornada</p>
-              <h2>Escolha seu personagem</h2>
-            </div>
-
-            <span class="form-rune" aria-hidden="true"></span>
-          </div>
-
-          <label class="field-label" for="heroName">
-            Nome do herói
-          </label>
-
-          <input
-            id="heroName"
-            name="heroName"
-            type="text"
-            minlength="2"
-            maxlength="16"
-            placeholder="Ex.: Lyra"
-            autocomplete="off"
-            required
-          />
-
-          <fieldset>
-            <legend>Escolha a classe</legend>
-
-            <div class="class-grid">
-              <button
-                class="class-card is-selected"
-                type="button"
-                data-class="guardian"
-                aria-pressed="true"
-              >
-                <span class="class-icon">◇</span>
-                <strong>Guardião</strong>
-                <small>Mais vida e defesa</small>
-              </button>
-
-              <button
-                class="class-card"
-                type="button"
-                data-class="hunter"
-                aria-pressed="false"
-              >
-                <span class="class-icon">⌁</span>
-                <strong>Caçador</strong>
-                <small>Crítico e agilidade</small>
-              </button>
-
-              <button
-                class="class-card"
-                type="button"
-                data-class="arcanist"
-                aria-pressed="false"
-              >
-                <span class="class-icon">⚚</span>
-                <strong>Arcanista</strong>
-                <small>Dano e recuperação</small>
-              </button>
-            </div>
-          </fieldset>
-
-          <p class="anime-art-note">
-            Escolha seu personagem
-          </p>
-
-          <button class="primary-cta" type="submit">
-            <span>Começar aventura</span>
-            <span aria-hidden="true">→</span>
-          </button>
-
-          <button
-            id="continueButton"
-            class="continue-button"
-            type="button"
-            hidden
-          >
-            Continuar jornada salva
-          </button>
-        </form>
-      </section>
-
-      <section
-        id="gameScreen"
-        class="screen game-screen"
-        aria-labelledby="hudTitle"
-        hidden
-      >
-        <header class="game-header">
-          <div class="brand-lockup">
-            <span class="brand-mark" aria-hidden="true">V</span>
-
-            <div>
-              <p>Crônicas de Valdora</p>
-              <h1 id="hudTitle">A sombra do dragão</h1>
-            </div>
-          </div>
-
-          <div class="hero-lockup">
-            <span
-              id="heroClassGlyph"
-              class="hero-glyph"
-              aria-hidden="true"
-            >
-              ◇
-            </span>
-
-            <div>
-              <strong id="heroNameHud">Herói</strong>
-              <span id="heroClassHud">Guardião</span>
-            </div>
-          </div>
-
-          <button
-            id="newHeroButton"
-            class="icon-button"
-            type="button"
-            aria-label="Criar um novo herói"
-            title="Nova jornada"
-          >
-            <span aria-hidden="true">↺</span>
-          </button>
-        </header>
-
-        <section class="stats-bar" aria-label="Estatísticas do herói">
-          <div class="stat-block stat-block--level">
-            <span>Nível</span>
-            <strong id="levelText">1</strong>
-          </div>
-
-          <div class="stat-block stat-block--wide">
-            <div class="stat-row">
-              <span>Vida</span>
-
-              <strong>
-                <span id="healthText">100</span>/<span id="maxHealthText">100</span>
-              </strong>
-            </div>
-
-            <div
-              id="healthBar"
-              class="meter"
-              role="progressbar"
-              aria-label="Vida"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-valuenow="100"
-            >
-              <span
-                id="healthProgress"
-                class="meter__fill meter__fill--health"
-              ></span>
-            </div>
-          </div>
-
-          <div class="stat-block stat-block--wide">
-            <div class="stat-row">
-              <span>Experiência</span>
-              <strong id="xpText">0 XP</strong>
-            </div>
-
-            <div
-              id="xpBar"
-              class="meter"
-              role="progressbar"
-              aria-label="Experiência do nível"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-valuenow="0"
-            >
-              <span
-                id="xpProgress"
-                class="meter__fill meter__fill--xp"
-              ></span>
-            </div>
-          </div>
-
-          <div class="stat-block stat-block--compact">
-            <span>Ouro</span>
-
-            <strong>
-              <span class="coin" aria-hidden="true"></span>
-              <span id="goldText">35</span>
-            </strong>
-          </div>
-
-          <div class="stat-block stat-block--weapon">
-            <span>Equipamento</span>
-            <strong id="weaponText">Espada curta</strong>
-          </div>
-        </section>
-
-        <div class="game-layout">
-          <section class="scene-panel" aria-label="Cena do jogo">
-            <div
-              id="sceneStage"
-              class="scene-stage"
-              data-scene="city"
-            >
-              <div
-                class="backdrop-shape backdrop-shape--one"
-                aria-hidden="true"
-              ></div>
-
-              <div
-                class="backdrop-shape backdrop-shape--two"
-                aria-hidden="true"
-              ></div>
-
-              <div
-                class="backdrop-shape backdrop-shape--three"
-                aria-hidden="true"
-              ></div>
-
-              <div class="scene-topline">
-                <div class="location-chip">
-                  <span class="location-dot" aria-hidden="true"></span>
-                  <span id="locationText">Praça de Valdora</span>
-                </div>
-
-                <div class="quest-chip">
-                  <span>Objetivo</span>
-                  <strong id="questText">
-                    Prepare-se para a jornada
-                  </strong>
-                </div>
-              </div>
-
-              <aside id="enemyHud" class="enemy-hud" hidden>
-                <div class="enemy-hud__row">
-                  <span id="enemyName">Inimigo</span>
-
-                  <strong>
-                    <span id="enemyHealthText">0</span>/<span id="enemyMaxHealthText">0</span>
-                  </strong>
-                </div>
-
-                <div
-                  id="enemyHealthBar"
-                  class="meter meter--enemy"
-                  role="progressbar"
-                  aria-label="Vida do inimigo"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-valuenow="100"
-                >
-                  <span
-                    id="enemyHealthProgress"
-                    class="meter__fill meter__fill--enemy"
-                  ></span>
-                </div>
-              </aside>
-
-              <div class="stage-floor" aria-hidden="true"></div>
-
-              <div class="stage-characters">
-                <figure
-                  id="heroFigure"
-                  class="combatant combatant--hero"
-                >
-                  <div
-                    id="heroAvatar"
-                    class="avatar avatar--stage"
-                    aria-hidden="true"
-                  ></div>
-
-                  <figcaption>
-                    <strong id="heroStageName">Herói</strong>
-                    <span id="heroStageRole">Guardião</span>
-                  </figcaption>
-                </figure>
-
-                <div
-                  id="versusMark"
-                  class="versus-mark"
-                  aria-hidden="true"
-                  hidden
-                >
-                  VS
-                </div>
-
-                <figure
-                  id="partnerFigure"
-                  class="combatant combatant--enemy"
-                  hidden
-                >
-                  <div
-                    id="partnerAvatar"
-                    class="avatar avatar--stage"
-                    aria-hidden="true"
-                  ></div>
-
-                  <figcaption>
-                    <strong id="partnerName">Mercador</strong>
-                    <span id="partnerRole">Aliado</span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div class="scene-caption">
-                <p id="sceneEyebrow">A jornada começa</p>
-                <h2 id="sceneTitle">Praça de Valdora</h2>
-              </div>
-            </div>
-          </section>
-
-          <section
-            class="command-panel"
-            aria-label="Comandos e narrativa"
-          >
-            <div class="story-panel">
-              <div class="story-heading">
-                <span class="story-rune" aria-hidden="true">✦</span>
-                <span>Relato da jornada</span>
-              </div>
-
-              <p id="storyText" aria-live="polite"></p>
-            </div>
-
-            <div
-              id="actionGrid"
-              class="action-grid"
-              aria-label="Ações disponíveis"
-            ></div>
-
-            <details class="journey-details">
-              <summary>Jornada e inventário</summary>
-
-              <div class="journey-content">
-                <div>
-                  <span>Progresso</span>
-                  <strong id="progressText">
-                    O dragão ainda está protegido.
-                  </strong>
-                </div>
-
-                <div>
-                  <span>Inventário</span>
-                  <strong id="inventoryText">Espada curta</strong>
-                </div>
-              </div>
-            </details>
-
-            <div class="game-footer">
-              <span id="autosaveStatus">
-                Progresso salvo automaticamente
-              </span>
-
-              <span class="keyboard-hint">
-                Teclas 1–4 selecionam ações
-              </span>
-            </div>
-          </section>
-        </div>
-      </section>
-    </main>
-
-    <div
-      id="toast"
-      class="toast"
-      role="status"
-      aria-live="polite"
-    ></div>
-
-    <dialog id="resetDialog" class="reset-dialog">
-      <form method="dialog">
-        <span class="dialog-rune" aria-hidden="true">↺</span>
-
-        <h2>Começar uma nova jornada?</h2>
-
-        <p>
-          O herói e o progresso atuais serão substituídos.
+  <main class="app-shell">
+    <section id="creatorScreen" class="screen creator-screen" aria-label="Criação de personagem">
+      <div class="creator-intro">
+        <button type="button" id="soundToggleCreator" class="icon-button sound-toggle sound-toggle--creator" aria-pressed="true" title="Som ligado">🔊</button>
+        <p class="eyebrow">RPG de aventura</p>
+        <h1>Crônicas de <span>Valdora</span></h1>
+        <p class="creator-lead">
+          O dragão fechou os portões da cidade. Escolha seu herói,
+          fortaleça-se nas cavernas e encerre o cerco.
         </p>
 
-        <div class="dialog-actions">
-          <button
-            class="dialog-button dialog-button--quiet"
-            value="cancel"
-          >
-            Cancelar
-          </button>
-
-          <button
-            id="confirmResetButton"
-            class="dialog-button dialog-button--danger"
-            value="confirm"
-          >
-            Criar novo herói
-          </button>
+        <div class="creator-preview">
+          <div class="sigil" aria-hidden="true"></div>
+          <div class="avatar avatar--preview">
+            <div id="creatorAvatar" class="preview-sprite"></div>
+          </div>
+          <div class="preview-copy">
+            <strong id="previewName">Seu herói</strong>
+            <span id="previewClass">Guardião • resistente</span>
+          </div>
         </div>
-      </form>
-    </dialog>
 
-    <script src="./script.js" defer></script>
-  </body>
+        <ul class="feature-list">
+          <li><span>01</span> Escolha de herói</li>
+          <li><span>02</span> Ande e pule livremente</li>
+          <li><span>03</span> Combate tático por turnos</li>
+          <li><span>04</span> Progresso salvo no navegador</li>
+        </ul>
+      </div>
+
+      <form id="characterForm" class="creator-form">
+        <div class="form-heading">
+          <div>
+            <p class="step-label">Antes da jornada</p>
+            <h2>Escolha seu personagem</h2>
+          </div>
+          <span class="form-rune" aria-hidden="true">✦</span>
+        </div>
+
+        <label class="field-label" for="heroName">Nome do herói</label>
+        <input id="heroName" name="heroName" type="text" maxlength="16" required
+               placeholder="Ex.: Aria, Dorn, Kael…" autocomplete="off">
+
+        <fieldset>
+          <legend>Escolha a classe</legend>
+          <div class="class-grid" role="group" aria-label="Classes disponíveis">
+            <button type="button" class="class-card is-selected" data-class="guardian" aria-pressed="true">
+              <span class="class-icon" aria-hidden="true">◇</span>
+              <strong>Guardião</strong>
+              <small>Mais vida e defesa</small>
+            </button>
+            <button type="button" class="class-card" data-class="hunter" aria-pressed="false">
+              <span class="class-icon" aria-hidden="true">⌁</span>
+              <strong>Caçador</strong>
+              <small>Crítico e agilidade</small>
+            </button>
+            <button type="button" class="class-card" data-class="arcanist" aria-pressed="false">
+              <span class="class-icon" aria-hidden="true">✦</span>
+              <strong>Arcanista</strong>
+              <small>Dano e recuperação</small>
+            </button>
+          </div>
+        </fieldset>
+
+        <p class="anime-art-note">
+          Nas cenas de exploração, use <strong>← →</strong> para andar e
+          <strong>Espaço</strong> para pular. Em combate, as teclas
+          <strong>1–4</strong> escolhem as ações.
+        </p>
+
+        <button type="submit" class="primary-cta">Começar aventura <span aria-hidden="true">→</span></button>
+        <button type="button" id="continueButton" class="continue-button" hidden>Continuar jornada salva</button>
+      </form>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" hidden aria-label="Jogo">
+      <header class="game-header">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">V</span>
+          <div>
+            <p>Crônicas de Valdora</p>
+            <h1>A sombra do dragão</h1>
+          </div>
+        </div>
+        <div class="hero-lockup">
+          <span id="heroClassGlyph" class="hero-glyph" aria-hidden="true">◇</span>
+          <div>
+            <strong id="heroNameHud">Herói</strong>
+            <span id="heroClassHud">Guardião</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button type="button" id="soundToggleGame" class="icon-button sound-toggle" aria-pressed="true" title="Som ligado">🔊</button>
+          <button type="button" id="newHeroButton" class="icon-button" title="Criar novo herói" aria-label="Criar novo herói">↺</button>
+        </div>
+      </header>
+
+      <div class="stats-bar">
+        <div class="stat-block stat-block--level">
+          <span>Nível</span>
+          <strong id="levelText">1</strong>
+        </div>
+        <div class="stat-block">
+          <div class="stat-row"><span>Vida</span><strong><span id="healthText">100</span>/<span id="maxHealthText">100</span></strong></div>
+          <div id="healthBar" class="meter" role="progressbar" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+            <div id="healthProgress" class="meter__fill meter__fill--health"></div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-row"><span>Experiência</span><strong id="xpText">0 XP</strong></div>
+          <div id="xpBar" class="meter" role="progressbar" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="xpProgress" class="meter__fill meter__fill--xp"></div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <span>Ouro</span>
+          <strong><span class="coin" aria-hidden="true"></span><span id="goldText">35</span></strong>
+        </div>
+        <div class="stat-block stat-block--weapon">
+          <span>Equipamento</span>
+          <strong id="weaponText">Espada curta</strong>
+        </div>
+      </div>
+
+      <div class="game-layout">
+        <div class="scene-panel">
+          <div id="sceneStage" class="scene-stage" data-scene="city">
+            <div class="backdrop-shape backdrop-shape--one" aria-hidden="true"></div>
+            <div class="backdrop-shape backdrop-shape--two" aria-hidden="true"></div>
+            <div class="backdrop-shape backdrop-shape--three" aria-hidden="true"></div>
+
+            <div class="scene-topline">
+              <div class="location-chip"><span class="location-dot" aria-hidden="true"></span><span id="locationText">Praça de Valdora</span></div>
+              <div class="quest-chip"><span>Objetivo</span><strong id="questText">Prepare-se para a jornada</strong></div>
+            </div>
+
+            <div id="enemyHud" class="enemy-hud" hidden>
+              <div class="enemy-hud__row">
+                <span id="enemyName">Inimigo</span>
+                <span><span id="enemyHealthText">0</span>/<span id="enemyMaxHealthText">0</span></span>
+              </div>
+              <div id="enemyHealthBar" class="meter meter--enemy" role="progressbar" aria-label="Vida do inimigo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                <div id="enemyHealthProgress" class="meter__fill meter__fill--enemy"></div>
+              </div>
+            </div>
+
+            <div class="stage-floor" aria-hidden="true"></div>
+
+            <div id="actorLayer" class="actor-layer">
+              <figure id="heroFigure" class="actor actor--hero" data-class-id="guardian">
+                <div class="actor__body">
+                  <div class="actor__shadow" aria-hidden="true"></div>
+                  <div class="actor__rig">
+                    <div class="actor__flip">
+                      <div class="actor__art actor__art--full" id="heroAvatar"></div>
+                      <div class="actor__art actor__art--legs" id="heroLegs" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                </div>
+                <figcaption class="actor__plate">
+                  <strong id="heroStageName">Herói</strong>
+                  <span id="heroStageRole">Guardião</span>
+                </figcaption>
+              </figure>
+
+              <div id="versusMark" class="versus-mark" hidden aria-hidden="true">VS</div>
+
+              <figure id="partnerFigure" class="actor actor--partner" hidden>
+                <div class="actor__body">
+                  <div class="actor__shadow" aria-hidden="true"></div>
+                  <div class="actor__rig">
+                    <div class="actor__flip">
+                      <div class="actor__art actor__art--full" id="partnerAvatar"></div>
+                      <div class="actor__art actor__art--legs" id="partnerLegs" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                </div>
+                <figcaption class="actor__plate">
+                  <strong id="partnerName">Aliado</strong>
+                  <span id="partnerRole">Mercador</span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="scene-caption">
+              <p id="sceneEyebrow">A jornada começa</p>
+              <h2 id="sceneTitle">Praça de Valdora</h2>
+            </div>
+
+            <p id="moveHint" class="move-hint">← → andar • Espaço pular</p>
+            <div id="moveControls" class="move-controls">
+              <div class="move-cluster">
+                <button type="button" id="moveLeft" class="move-button" aria-label="Andar para a esquerda">◀</button>
+                <button type="button" id="moveRight" class="move-button" aria-label="Andar para a direita">▶</button>
+              </div>
+              <button type="button" id="jumpButton" class="move-button move-button--jump" aria-label="Pular">⤒ <span>Pular</span></button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="command-panel">
+          <div class="story-panel">
+            <p class="story-heading"><span class="story-rune" aria-hidden="true">✦</span> Relato da jornada</p>
+            <p id="storyText" aria-live="polite">A jornada começa na praça de Valdora.</p>
+          </div>
+
+          <div id="actionGrid" class="action-grid"></div>
+
+          <details class="journey-details">
+            <summary>Jornada e inventário</summary>
+            <div class="journey-content">
+              <div><span>Progresso</span><strong id="progressText">O dragão ainda está protegido.</strong></div>
+              <div><span>Inventário</span><strong id="inventoryText">Espada curta</strong></div>
+            </div>
+          </details>
+
+          <footer class="game-footer">
+            <span id="autosaveStatus">Progresso salvo automaticamente</span>
+            <span class="keyboard-hint">1–4 ações • ← → mover • Espaço pular</span>
+          </footer>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="resetDialog" class="reset-dialog">
+    <form method="dialog">
+      <span class="dialog-rune" aria-hidden="true">↺</span>
+      <h2>Começar uma nova jornada?</h2>
+      <p>O herói e o progresso atuais serão substituídos.</p>
+      <div class="dialog-actions">
+        <button type="submit" class="dialog-button dialog-button--quiet" value="cancel">Cancelar</button>
+        <button type="button" id="confirmResetButton" class="dialog-button dialog-button--danger">Criar novo herói</button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript><p style="padding:2rem;text-align:center">Este jogo precisa de JavaScript ativado.</p></noscript>
+  <script src="script.js"></script>
+</body>
 </html>
