@@ -2,6 +2,8 @@
 
 const STORAGE_KEY = "cronicas-de-valdora-save-v2";
 const SOUND_KEY = "cronicas-de-valdora-sound";
+const MUSIC_SRC = "./The_Last_Defiance.mp3";
+const MUSIC_VOLUME = 0.15;
 
 const CHARACTER_ASSETS = {
   guardian: "./assets/characters/guardian.webp",
@@ -332,6 +334,7 @@ const AudioFX = {
       this.ensure();
       this.click();
     }
+    Music.setEnabled(on);
     updateSoundButtons();
   }
 };
@@ -343,6 +346,52 @@ function updateSoundButtons() {
     button.setAttribute("aria-pressed", String(AudioFX.enabled));
     button.title = AudioFX.enabled ? "Som ligado — clique para silenciar" : "Som desligado — clique para ativar";
   });
+}
+
+const Music = {
+  audio: null,
+  available: true,
+  started: false,
+  init() {
+    if (this.audio || !this.available) return;
+    try {
+      this.audio = new Audio(MUSIC_SRC);
+      this.audio.loop = true;
+      this.audio.preload = "auto";
+      this.audio.volume = MUSIC_VOLUME;
+      this.audio.addEventListener("error", () => {
+        this.available = false;
+      });
+    } catch {
+      this.available = false;
+    }
+  },
+  play() {
+    if (!AudioFX.enabled || !this.available) return;
+    this.init();
+    if (!this.audio) return;
+    this.audio.volume = MUSIC_VOLUME;
+    const attempt = this.audio.play();
+    if (attempt && typeof attempt.then === "function") {
+      attempt.then(() => {
+        this.started = true;
+      }).catch(() => {});
+    } else {
+      this.started = true;
+    }
+  },
+  pause() {
+    if (this.audio) this.audio.pause();
+  },
+  setEnabled(on) {
+    if (on) this.play();
+    else this.pause();
+  }
+};
+
+function unlockAudio() {
+  AudioFX.ensure();
+  Music.play();
 }
 
 const ENGINE = {
@@ -402,6 +451,7 @@ const heroActor = makeActor("hero");
 const partnerActor = makeActor("partner");
 
 function bindActor(actor, element) {
+  if (!element) return;
   actor.el = element;
   actor.rig = element.querySelector(".actor__rig");
   actor.flip = element.querySelector(".actor__flip");
@@ -593,7 +643,7 @@ function updateActor(actor, dt, t) {
 }
 
 function renderActor(actor) {
-  if (!actor.el) return;
+  if (!actor.el || !actor.rig || !actor.flip || !actor.legsEl || !actor.shadowEl) return;
   actor.el.style.left = `${(actor.x * 100).toFixed(3)}%`;
   actor.rig.style.transform = `translate3d(0, ${(-(actor.y + actor.bob)).toFixed(2)}px, 0) scale(${actor.sx.toFixed(3)}, ${actor.sy.toFixed(3)})`;
   const mirror = actor.facing * actor.artBias;
@@ -881,6 +931,7 @@ function showGame() {
   ui.creatorScreen.hidden = true;
   ui.gameScreen.hidden = false;
   startEngine();
+  Music.play();
   window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
 }
 
@@ -1924,6 +1975,7 @@ function randomInt(minimum, maximum) {
 }
 
 function bindMoveButton(button, direction) {
+  if (!button) return;
   const press = (event) => {
     event.preventDefault();
     if (button.disabled) return;
@@ -1986,8 +2038,8 @@ function bindGlobalControls() {
     createAnotherHero();
   });
 
-  ui.soundToggleCreator.addEventListener("click", () => AudioFX.setEnabled(!AudioFX.enabled));
-  ui.soundToggleGame.addEventListener("click", () => AudioFX.setEnabled(!AudioFX.enabled));
+  if (ui.soundToggleCreator) ui.soundToggleCreator.addEventListener("click", () => AudioFX.setEnabled(!AudioFX.enabled));
+  if (ui.soundToggleGame) ui.soundToggleGame.addEventListener("click", () => AudioFX.setEnabled(!AudioFX.enabled));
 
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
@@ -1998,23 +2050,32 @@ function bindGlobalControls() {
 
   bindMoveButton(ui.moveLeft, "left");
   bindMoveButton(ui.moveRight, "right");
-  ui.jumpButton.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-    freeJump();
-  });
+  if (ui.jumpButton) {
+    ui.jumpButton.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      freeJump();
+    });
+  }
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stopEngine();
-    else if (!ui.gameScreen.hidden) startEngine();
+    if (document.hidden) {
+      stopEngine();
+      Music.pause();
+    } else {
+      if (!ui.gameScreen.hidden) startEngine();
+      if (Music.started) Music.play();
+    }
   });
 
-  document.addEventListener("pointerdown", () => AudioFX.ensure(), { once: true });
+  document.addEventListener("pointerdown", unlockAudio, { once: true });
+  document.addEventListener("keydown", unlockAudio, { once: true });
 }
 
 function initialize() {
   bindActor(heroActor, ui.heroFigure);
   bindActor(partnerActor, ui.partnerFigure);
   preloadCharacterAssets();
+  Music.init();
   bindCreatorControls();
   bindGlobalControls();
   updateCreatorPreview();
