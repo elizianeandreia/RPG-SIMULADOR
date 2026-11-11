@@ -2,7 +2,7 @@
 
 const STORAGE_KEY = "cronicas-de-valdora-save-v2";
 const SOUND_KEY = "cronicas-de-valdora-sound";
-const MUSIC_SRC = "./assets/audio/The_Last_Defiance.mp3";
+const MUSIC_SRC = "./The_Last_Defiance.mp3";
 const MUSIC_VOLUME = 0.15;
 
 const CHARACTER_ASSETS = {
